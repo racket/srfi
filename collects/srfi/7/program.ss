@@ -1,37 +1,120 @@
 ;;;
 ;;; <program.ss> ---- SRFI-7 program
 ;;; Time-stamp: <03/02/24 11:20:35 solsona>
-;;;
-;;; This was ported from the SRFI-7 reference implementation by
-;;; Richard Kelsey, for more information please visit:
-;;;
-;;;   http://srfi.schemers.org/srfi-7/
+;;; based on MJ Ray's code for SRFI 0
 
 (module program mzscheme
-  (require (lib "0.ss" "srfi"))
+  (require-for-syntax (lib "features.ss" "srfi"))
+  (require (lib "include.ss"))
   (provide program)
   
+  (define-syntax require-feature
+    (lambda (x)
+      (syntax-case x ()
+	((_ id)
+	 (with-syntax ((clause
+			(datum->syntax-object
+			 (syntax require)
+			 (feature->require-clause
+			  (syntax-object->datum (syntax id))))))
+	   (syntax
+	    (require (lib . clause))))))))
+  
   (define-syntax program
-    (syntax-rules (requires files code feature-cond)
-		  ((program)
-		   (begin))
-		  ((program (requires feature-id ...)
-			    more ...)
-		   (begin (cond-expand ((and feature-id ...) 'okay))
-			  (program more ...)))
-		  ((program (files filename ...)
-			    more ...)
-		   (begin (load filename) ...
-			  (program more ...)))
-		  ((program (code stuff ...)
-			    more ...)
-		   (begin stuff ...
-			  (program more ...)))
-		  ((program (feature-cond (requirement stuff ...) ...)
-			    more ...)
-		   (begin (cond-expand (requirement (program stuff ...)) ...)
-			  (program more ...)))))
+    (lambda (x)
+      (syntax-case x (requires files code feature-cond and or not)
+	((_)
+	 (syntax (begin (void))))
+	((_
+	  (requires feature-id ...)
+	  more ...)
+	 (syntax
+	  (begin 
+	    (require-feature feature-id) ...
+	    (program more ...))))
+	((_
+	  (files filename ...)
+	  more ...)
+	 (with-syntax ((_x x))
+	   (syntax
+	    (begin
+	      (include-at/relative-to _x filename filename) ...
+	      (program
+	       more ...)))))
+	((_
+	  (code stuff ...)
+	  more ...)
+	 (syntax
+	  (begin
+	    stuff ...
+	    (program more ...))))
+	((_
+	  (feature-cond)
+	  more ...)
+	 (syntax
+	  (program
+	   more ...)))
+	((_
+	  (feature-cond (else stuff ...))
+	  more ...)
+	 (syntax
+	  (program
+	   stuff ...
+	   more ...)))
 
-  )
+	((_
+	  (feature-cond ((and) stuff ...)
+			rest ...)
+	  more ...)
+	 (syntax
+	  (program
+	   stuff ...
+	   (feature-cond rest ...)
+	   more ...)))
+
+	((_
+	  (feature-cond ((and requirement1 requirement ...) stuff ...)
+			rest ...)
+	  more ...)
+	 (syntax
+	  (program
+	   (feature-cond (requirement1
+			  (feature-cond ((and requirement ...) stuff ...)))
+			 rest ...)
+	   more ...)))
+      
+	((_
+	  (feature-cond ((or) stuff ...)
+			rest ...)
+	  more ...)
+	 (syntax
+	  (program
+	   (feature-cond rest ...)
+	   more ...)))
+	((_
+	  (feature-cond ((or requirement1 requirement ...) stuff ...)
+			rest ...)
+	  more ...)
+	 (syntax
+	  (program
+	   (feature-cond (requirement1 stuff ...)
+			 ((or requirement ...) stuff ...)
+			 rest ...)
+	   more ...)))
+
+	((_
+	  (feature-cond (requirement stuff ...)
+			rest ...)
+	  more ...)
+	 (if (feature-present? (syntax-object->datum (syntax requirement)))
+	     (syntax
+	      (program
+	       stuff ...
+	       (feature-cond rest ...)
+	       more ...))
+	     (syntax
+	      (program
+	       (feature-cond rest ...)
+	       more ...))))))))
 
 ;;; program.ss ends here

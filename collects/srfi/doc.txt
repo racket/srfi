@@ -39,7 +39,6 @@ number of the already ported SRFIs:
   SRFI               File name               Sub-collection
  ========           ===========             ================
 
- SRFI-0             cond-expand.ss                 0
  SRFI-1             list.ss	                   1
  SRFI-2             and-let.ss                     2
  SRFI-4             homo-vectors.ss                4
