@@ -151,7 +151,7 @@
      [(lower upper error?) (ucs-range->char-set lower upper error? char-set:empty)]
      [(lower upper error? cs)
       (when (or (lower . < . 0)
-		(upper . > . #x200000)
+		(upper . > . #x110000)
 		(lower . >= . upper))
 	(raise (make-exn:fail:contract
 		(string->immutable-string
