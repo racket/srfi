@@ -1,6 +1,8 @@
 
 ;; Since Matthew implemented this module, tests are in
 ;;  plt/collects/tests/mzscheme/char-set.ss.
+;; Since Mike Sperber looked carefully at this module,
+;;  the tests are reasonably good.
 
 (module char-set mzscheme
   (require (lib "integer-set.ss")
