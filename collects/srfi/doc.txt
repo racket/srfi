@@ -44,6 +44,7 @@ number of the already ported SRFIs:
  SRFI-2             and-let.ss                     2
  SRFI-5             let.ss                         5
  SRFI-6(+)
+ SRFI-7             program.ss                     7
  SRFI-8             receive.ss                     8
  SRFI-9             record.ss                      9
  SRFI-11(+)
@@ -67,30 +68,13 @@ Notes:
 `--------------------
 
 ,--------------------
-| +++ time.ss provides a new implementation of the date structure.
-|     Care must be taken NOT to confuse that with the PLT's own date
-|     struct.
-|
-| A module named tm.ss is also provided with "other" procedures not
-| in the SRFI-19 document.  Instead of the expected "time"
-| structure. This port returns a tm:time structure, so that it won't
-| conflict with `time' procedure used to time an expression in PLT
-| Scheme.  
-| For example, 
-| > (current-time)
-| #<struct:tm:time>
-| 
-| so you can use: 
-| > (tm:time-seconds (current-time))
-| 13
-| 
-| Of course, all procedures expecting a "time" structure, now work with
-| a "tm:time", so that you can, for instance, do:
-| 
-| > (time->string (current-time))
-| "2002-05-10T12:50:44Z-05:00"
+| +++ The time module does not export its time structure (you have to
+| use the time-* procedures.)  It renames all the date-* accesors to
+| tm:date-* so that you won't get errors when including this code in
+| other modules.  Care most be taken NOT to confuse the internal date
+| structure with the PLT Scheme one, they are not the same, and all
+| procedures from this library expect the former.
 `--------------------
-
 
 That's it for now.  If you have ported other SRFIs, and want them
 added to this library, please let us know:
