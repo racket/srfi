@@ -632,16 +632,17 @@
      (else
       (tm:char-pos char str (+ index 1) len))))
 
-  (define (tm:split-real r)
-    (if (integer? r)
-	(values r 0)
-	(let ((str (number->string (exact->inexact r))))
-	  (let ((ppos (tm:char-pos #\. str 0 (string-length str))))
-	    (if ppos
-		(values
-		 (string->number (substring str 0 ppos))
-		 (string->number (substring str  (+ ppos 1) (string-length str))))
-		(values r 0))))))
+  ; return a string representing the decimal expansion of the fractional 
+  ; portion of a number, limited by a specified precision
+  (define (tm:decimal-expansion r precision)
+    (let loop ([num (- r (round r))]
+               [p precision])
+      (if (or (= p 0) (= num 0))
+          ""
+          (let* ([num-times-10 (* 10 num)]
+                 [round-num-times-10 (round num-times-10)]) 
+            (string-append (number->string (inexact->exact round-num-times-10))
+                           (loop (- num-times-10 round-num-times-10) (- p 1)))))))
 
   ;; gives the seconds/date/month/year
   (define (tm:decode-julian-day-number jdn)
@@ -833,9 +834,9 @@
 	 (+ (/ (+ (* hour 60 60)
 		  (* minute 60)
 		  second
-		  (/ nanosecond tm:nano))
-	       tm:sid
-	       (- offset))))))
+		  (/ nanosecond tm:nano)
+                  (- offset))
+	       tm:sid)))))
 
   (define (date->modified-julian-day date)
     (- (date->julian-day date)
@@ -1038,16 +1039,11 @@
 		     (display (tm:padding (srfi:date-second date)
 					  pad-with 2)
 			      port))
-		 (receive (i f) 
-			  (tm:split-real (/ 
-					  (date-nanosecond date)
-					  tm:nano 1.0))
-			  (let* ((ns (number->string f))
-				 (le (string-length ns)))
-			    (if (> le 2)
-				(begin
-				  (display (localized-message tm:locale-number-separator) port)
-				  (display (substring ns 2 le) port)))))))
+                 (let ([f (tm:decimal-expansion (/ (date-nanosecond date) tm:nano) 6)])
+                   (if (> (string-length f) 0)
+                       (begin
+                         (display (localized-message tm:locale-number-separator) port)
+                         (display f port))))))
      (cons #\h (lambda (date pad-with port)
 		 (display (date->string date "~b") port)))
      (cons #\H (lambda (date pad-with port)
@@ -1474,3 +1470,4 @@
 	  (tm:time-error 'string->date 'bad-date-format-string (list "Incomplete date read. " newdate template-string)))))
   
   )
+
