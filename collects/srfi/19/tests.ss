@@ -1,5 +1,12 @@
 (module tests mzscheme
 
+  ;; tests by Will Fitzgerald, augmented by John Clements -- 2004-08-16
+
+  ;; these tests were built using schemeunit 2.0a (IIRC).  Older versions
+  ;; of schemeunit don't support the same syntax for creating assertions.
+  ;; so when you try to run the tests and they fail miserably, that's probably
+  ;; why.
+  
 ;;; simple test procedures
 (require (lib "time.ss" "srfi" "19")
          (lib "test.ss" "schemeunit")
