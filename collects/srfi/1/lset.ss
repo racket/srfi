@@ -37,7 +37,7 @@
 
   (require (lib "optional.ss" "srfi")
 		   (all-except "search.ss" member)
-		   (all-except "fold.ss" map)
+		   (all-except "fold.ss" map for-each)
 		   (rename "search.ss" s:member member)
 		   "delete.ss"
 		   "predicate.ss"

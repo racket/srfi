@@ -213,32 +213,39 @@
   (require (lib "optional.ss" "srfi"))
 
   (require "cons.ss"
-		   "selector.ss"
-		   "predicate.ss"
-		   (all-except "misc.ss" append! reverse!)
-		   (rename "misc.ss" s:append! append!)
-		   (rename "misc.ss" s:reverse! reverse!)
-		   (all-except "fold.ss" map)
-		   (rename "fold.ss" s:map map)
-		   (all-except "search.ss" member)
-		   (rename "search.ss" s:member member)
-		   "filter.ss"
-		   "delete.ss"
-		   (all-except "alist.ss" assoc)
-		   (rename "alist.ss" s:assoc assoc)
-		   "lset.ss")
+	   "selector.ss"
+	   "predicate.ss"
+	   (all-except "misc.ss" append! reverse!)
+	   (rename "misc.ss" s:append! append!)
+	   (rename "misc.ss" s:reverse! reverse!)
+	   (all-except "fold.ss" map for-each)
+	   (rename "fold.ss" s:map map)
+	   (rename "fold.ss" s:for-each for-each)
+	   (all-except "search.ss" member)
+	   (rename "search.ss" s:member member)
+	   "filter.ss"
+	   "delete.ss"
+	   (all-except "alist.ss" assoc)
+	   (rename "alist.ss" s:assoc assoc)
+	   "lset.ss")
 
 
   (provide 
    (all-from "cons.ss")
    (all-from "selector.ss")
    (all-from "predicate.ss")
-   (all-from "misc.ss")
-   (all-from "fold.ss")
-   (all-from "search.ss")
+   (all-from-except "misc.ss" s:append! s:reverse!)
+   (rename s:append! append!)
+   (rename s:reverse! reverse!)
+   (all-from-except "fold.ss" s:map s:for-each)
+   (rename s:map map)
+   (rename s:for-each for-each)
+   (all-from-except "search.ss" member)
+   (rename s:member member)
    (all-from "filter.ss")
    (all-from "delete.ss")
-   (all-from "alist.ss")
+   (all-from-except "alist.ss" assoc)
+   (rename s:assoc assoc)
    (all-from "lset.ss"))
 
 
