@@ -1,9 +1,9 @@
 ; SRFI 42 as a module in PLT -----------------------------------------------
 ; Sebastian.Egner@philips.com, 15-May-2003, PLT 204.
-; For running demos: (require (lib "42-examples.ss" "srfi" "42"))
+; For running demos: (require (lib "examples.ss" "srfi" "42"))
 ; For anything else: http://srfi.schemers.org/srfi-42/
 
-(module comprehensions mzscheme
+(module |comprehensions| mzscheme
 
  (require (lib "23.ss" "srfi"))
 
@@ -120,7 +120,7 @@
     ; filter -> make conditional
     ((do-ec (if test) cmd)
      (if test (do-ec cmd)) )
-    ((do-ec (my-not test) cmd)
+    ((do-ec (not test) cmd)
      (if (not test) (do-ec cmd)) )
     ((do-ec (and test ...) cmd)
      (if (and test ...) (do-ec cmd)) )
