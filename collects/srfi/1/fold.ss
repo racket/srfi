@@ -42,21 +42,21 @@
   (require (lib "receive.ss" "srfi" "8"))
 
   (provide (rename my-map map)
-		   for-each
-		   fold
-		   unfold
-		   pair-fold
-		   reduce
-		   fold-right
-		   unfold-right
-		   pair-fold-right
-		   reduce-right
-		   append-map
-		   append-map!
-		   map!
-		   pair-for-each
-		   filter-map
-		   map-in-order)
+	   (rename my-for-each for-each)
+	   fold
+	   unfold
+	   pair-fold
+	   reduce
+	   fold-right
+	   unfold-right
+	   pair-fold-right
+	   reduce-right
+	   append-map
+	   append-map!
+	   map!
+	   pair-for-each
+	   filter-map
+	   map-in-order)
 
   
   ;; fold/unfold
@@ -264,5 +264,26 @@
   ;; We extend MAP to handle arguments of unequal length.
   (define my-map map-in-order)	
   
+
+;;; Apply F across lists, guaranteeing to go left-to-right.
+;;; NOTE: Some implementations of R5RS MAP are compliant with this spec;
+;;; in which case this procedure may simply be defined as a synonym for FOR-EACH.
+
+  (define (my-for-each f lis1 . lists)
+    (check-arg procedure? f for-each)
+    (if (pair? lists)
+	(let recur ((lists (cons lis1 lists)))
+	  (receive (cars cdrs) (%cars+cdrs lists)
+	    (if (pair? cars)
+		(begin
+		  (apply f cars)	; Do head first,
+		  (recur cdrs)))))	; then tail.
+	    
+	;; Fast path.
+	(let recur ((lis lis1))
+	  (if (not (null-list? lis))
+	      (begin
+		(f (car lis))		; Do head first,
+		(recur (cdr lis)))))))
   )
 ;;; fold.ss ends here
