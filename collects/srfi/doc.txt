@@ -55,7 +55,7 @@ number of the already ported SRFIs:
 
  SRFI-1             list.ss	                   1
  SRFI-2             and-let.ss                     2
- SRFI-4             homo-vectors.ss                4
+ SRFI-4(*1)         4.ss
  SRFI-5             let.ss                         5
  SRFI-6(+)          6.ss
  SRFI-7             program.ss                     7
@@ -67,7 +67,7 @@ number of the already ported SRFIs:
  SRFI-16(+)         16.ss
  SRFI-17            set.ss                        17
  SRFI-18(++)        18.ss
- SRFI-19(+++)       time.ss                       19
+ SRFI-19(*2)        time.ss                       19
  SRFI-23(+)         23.ss
  SRFI-25            array.ss                      25
  SRFI-26            cut.ss                        26
@@ -88,7 +88,12 @@ Notes:
 `--------------------
 
 ,--------------------
-| +++ The time module does not export its time structure (you have to
+| *1 The functionality is all part of mzscheme available via
+| (lib "foreign.ss"), the only missing part is the i/o syntax.
+`--------------------
+
+,--------------------
+| *2 The time module does not export its time structure (you have to
 | use the time-* procedures.)  It renames all the date-* accesors to
 | tm:date-* so that you won't get errors when including this code in
 | other modules.  Care most be taken NOT to confuse the internal date
