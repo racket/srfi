@@ -20,7 +20,7 @@ prefered method, or this one:
 
 		 (require (lib "NAME.ss" "srfi" "N"))
 
-if you now the `informative name' of the SRFI.
+if you know the `informative name' of the SRFI.
 
 N, is a number corresponding to the sub-collection that holds a
 particular SRFI, and NAME is a more descriptive name we assigned to
@@ -44,21 +44,22 @@ number of the already ported SRFIs:
  SRFI-2             and-let.ss                     2
  SRFI-4             homo-vectors.ss                4
  SRFI-5             let.ss                         5
- SRFI-6(+)
+ SRFI-6(+)          6.ss
  SRFI-7             program.ss                     7
  SRFI-8             receive.ss                     8
  SRFI-9             record.ss                      9
- SRFI-11(+)
+ SRFI-11(+)         11.ss
  SRFI-13            string.ss                     13
  SRFI-14            char-set.ss                   14
- SRFI-16(+)
+ SRFI-16(+)         16.ss
  SRFI-17            set.ss                        17
- SRFI-18(++)
+ SRFI-18(++)        18.ss
  SRFI-19(+++)       time.ss                       19
- SRFI-23(+)
+ SRFI-23(+)         23.ss
  SRFI-25            array.ss                      25
  SRFI-26            cut.ss                        26
- SRFI-28(+)
+ SRFI-28(+)         28.ss
+ SRFI-29            localization.ss               29
  
 Notes:
 ,--------------------
