@@ -1,6 +1,6 @@
 ;;;
 ;;; <time.ss> ---- SRFI 19 Time Data Types and Procedures port to PLT Scheme
-;;; Time-stamp: <03/08/12 16:24:42 solsona>
+;;; Time-stamp: <2004-07-21 12:57:06 solsona>
 ;;;
 ;;; Usually, I would add a copyright notice, and the announce that
 ;;; this code is under the LGPL licence.  Nevertheless, I only did the
@@ -1243,9 +1243,7 @@
 		(not (char-numeric? ch))
 		(and upto (>= nchars  upto )))
 	    accum
-	    (accum-int port (+ (* accum 10) (tm:char->int (read-char
-							   port))) (+
-								    nchars 1)))))
+	    (accum-int port (+ (* accum 10) (tm:char->int (read-char port))) (+ nchars 1)))))
     (accum-int port 0 0))
 
   (define (tm:make-integer-reader upto)
@@ -1264,8 +1262,7 @@
 			   "Premature ending to integer read."))
 	   ((char-numeric? ch)
 	    (set! padding-ok #f)
-	    (accum-int port (+ (* accum 10) (tm:char->int (read-char
-							   port)))
+	    (accum-int port (+ (* accum 10) (tm:char->int (read-char port)))
 		       (+ nchars 1)))
 	   (padding-ok
 	    (read-char port)		; consume padding
@@ -1298,29 +1295,25 @@
 			       (list "Invalid time zone +/-" ch))))
 	      (let ((ch (read-char port)))
 		(if (eof-object? ch)
-		    (tm:time-error 'string->date 'bad-date-template-string
-				   (list "Invalid time zone number" ch)))
+		    (tm:time-error 'string->date 'bad-date-template-string (list "Invalid time zone number" ch)))
 		(set! offset (* (tm:char->int ch)
 				10 60 60)))
 	      (let ((ch (read-char port)))
-		(if (eof-object? ch)
-		    (tm:time-error 'string->date 'bad-date-template-string
-				   (list "Invalid time zone number" ch)))
-		(set! offset (+ offset (* (tm:char->int ch)
-					  60 60))))
+		(unless (eof-object? ch)
+                    ;; FIXME: non-existing values should be considered Zero instead of an error
+                    ;; (tm:time-error 'string->date 'bad-date-template-string (list "Invalid time zone number" ch)))
+                   (set! offset (+ offset (* (tm:char->int ch) 60 60)))))
 	      (let ((ch (read-char port)))
-		(if (eof-object? ch)
-		    (tm:time-error 'string->date 'bad-date-template-string
-				   (list "Invalid time zone number" ch)))
-		(set! offset (+ offset (* (tm:char->int ch)
-					  10 60))))
+		(unless (eof-object? ch)
+                  ;; FIXME: non-existing values should be considered Zero instead of an error
+                  ;; (tm:time-error 'string->date 'bad-date-template-string (list "Invalid time zone number" ch)))
+                  (set! offset (+ offset (* (tm:char->int ch) 10 60)))))
 	      (let ((ch (read-char port)))
-		(if (eof-object? ch)
-		    (tm:time-error 'string->date 'bad-date-template-string
-				   (list "Invalid time zone number" ch)))
-		(set! offset (+ offset (* (tm:char->int ch)
-					  60))))
-	      (if positive? offset (- offset)))))))
+		(unless (eof-object? ch)
+                  ;; FIXME: non-existing values should be considered Zero instead of an error
+                  ;; (tm:time-error 'string->date 'bad-date-template-string (list "Invalid time zone number" ch)))
+		(set! offset (+ offset (* (tm:char->int ch) 60)))))
+              (if positive? offset (- offset)))))))
   
   ;; looking at a char, read the char string, run thru indexer, return index
   (define (tm:locale-reader port indexer)
@@ -1362,7 +1355,8 @@
   ;; In some cases (e.g., ~A) the action is to do nothing
   (define tm:read-directives 
     (let ( (ireader4 (tm:make-integer-reader 4))
-	   (ireader2 (tm:make-integer-reader 2))
+	  (ireader2 (tm:make-integer-reader 2))
+           (ireader7 (tm:make-integer-reader 7))
 	   (ireaderf (tm:make-integer-reader #f))
 	   (eireader2 (tm:make-integer-exact-reader 2))
 	   (eireader4 (tm:make-integer-exact-reader 4))
@@ -1405,6 +1399,8 @@
        (list #\M char-numeric? ireader2 (lambda (val object)
 					  (tm:set-date-minute!
 					   object val)))
+       (list #\N char-numeric? ireader7 (lambda (val object)
+                                          (tm:set-date-nanosecond! object val)))
        (list #\S char-numeric? ireader2 (lambda (val object)
 					  (tm:set-date-second! object val)))
        (list #\y char-fail eireader2 
@@ -1466,7 +1462,7 @@
 	   (srfi:date-month date)
 	   (srfi:date-year date)
 	   (date-zone-offset date)))
-    (let ( (newdate (make-srfi:date 0 0 0 0 #f #f #f (tm:local-tz-offset))) )
+    (let ( (newdate (make-srfi:date 0 0 0 0 #t #t #t (tm:local-tz-offset))) )
       (tm:string->date newdate
 		       0
 		       template-string
