@@ -70,7 +70,6 @@
 	 (syntax
 	  (program
 	   stuff ...
-	   (feature-cond rest ...)
 	   more ...)))
 
 	((_
@@ -121,7 +120,6 @@
 	     (syntax
 	      (program
 	       stuff ...
-	       (feature-cond rest ...)
 	       more ...))
 	     (syntax
 	      (program
