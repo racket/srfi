@@ -13,10 +13,10 @@
       (syntax-case x ()
 	((_ id)
 	 (with-syntax ((require-spec
-                    (datum->syntax-object
-                      (syntax id)
-                      (feature->require-clause
-                        (syntax-object->datum (syntax id))))))
+			(datum->syntax-object
+			 (syntax id)
+			 (feature->require-clause
+			  (syntax-object->datum (syntax id))))))
 	   (syntax
 	    (require require-spec)))))))
   
