@@ -1,6 +1,6 @@
 ;;;
 ;;; <time.ss> ---- SRFI 19 Time Data Types and Procedures port to PLT Scheme
-;;; Time-stamp: <03/04/22 20:50:37 solsona>
+;;; Time-stamp: <03/08/12 16:24:42 solsona>
 ;;;
 ;;; Usually, I would add a copyright notice, and the announce that
 ;;; this code is under the LGPL licence.  Nevertheless, I only did the
@@ -144,12 +144,12 @@
   (define tm:locale-long-weekday-vector (vector 'sunday 'monday 'tuesday 'wednesday
 						'thursday 'friday 'saturday))
   ;; note empty string in 0th place. 
-  (define tm:locale-abbr-month-vector   (vector "" 'jan 'feb 'mar
+  (define tm:locale-abbr-month-vector   (vector 'jan 'feb 'mar
 						'apr 'may 'jun 'jul
 						'aug 'sep 'oct 'nov
 						'dec))
   
-  (define tm:locale-long-month-vector   (vector "" 'january 'february
+  (define tm:locale-long-month-vector   (vector 'january 'february
 						'march 'april 'may
 						'june 'july 'august
 						'september 'october
@@ -952,23 +952,23 @@
     (abs (remainder i (expt 10 n))))
 
   (define (tm:locale-abbr-weekday n) 
-    (vector-ref tm:locale-abbr-weekday-vector n))
+    (localized-message (vector-ref tm:locale-abbr-weekday-vector n)))
 
   (define (tm:locale-long-weekday n)
-    (vector-ref tm:locale-long-weekday-vector n))
+    (localized-message (vector-ref tm:locale-long-weekday-vector n)))
 
   (define (tm:locale-abbr-month n)
-    (vector-ref tm:locale-abbr-month-vector n))
+    (localized-message (vector-ref tm:locale-abbr-month-vector (- n 1))))
 
   (define (tm:locale-long-month n)
-    (vector-ref tm:locale-long-month-vector n))
+    (localized-message (vector-ref tm:locale-long-month-vector (- n 1))))
 
   (define (tm:vector-find needle haystack comparator)
     (let ((len (vector-length haystack)))
       (define (tm:vector-find-int index)
 	(cond
 	 ((>= index len) #f)
-	 ((comparator needle (vector-ref haystack index)) index)
+	 ((comparator needle (localized-message (vector-ref haystack index))) (+ index 1))
 	 (else (tm:vector-find-int (+ index 1)))))
       (tm:vector-find-int 0)))
 
@@ -1018,20 +1018,16 @@
      (cons #\~ (lambda (date pad-with port) (display #\~ port)))
      
      (cons #\a (lambda (date pad-with port)
-		 (display (localized-message
-			   (tm:locale-abbr-weekday (date-week-day date)))
+		 (display (tm:locale-abbr-weekday (date-week-day date))
 			  port)))
      (cons #\A (lambda (date pad-with port)
-		 (display (localized-message
-			   (tm:locale-long-weekday (date-week-day date)))
+		 (display (tm:locale-long-weekday (date-week-day date))
 			  port)))
      (cons #\b (lambda (date pad-with port)
-		 (display (localized-message
-			   (tm:locale-abbr-month (date-month date)))
+		 (display (tm:locale-abbr-month (date-month date))
 			  port)))
      (cons #\B (lambda (date pad-with port)
-		 (display (localized-message
-			   (tm:locale-long-month (date-month date)))
+		 (display (tm:locale-long-month (date-month date))
 			  port)))
      (cons #\c (lambda (date pad-with port)
 		 (display (date->string date (localized-message tm:locale-date-time-format)) port)))
