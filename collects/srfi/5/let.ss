@@ -1,6 +1,6 @@
 ;;;
 ;;; <let.ss> ---- SRFI 5 A compatible let form with signatures and rest arguments
-;;; Time-stamp: <03/02/06 14:20 sperber>
+;;; Time-stamp: <03/04/07 08:36:23 solsona>
 ;;;
 ;;; Usually, I would add a copyright notice, and the announce that
 ;;; this code is under the LGPL licence.  Nevertheless, I only did the
@@ -21,7 +21,7 @@
     ((my-let ((variable value) ...) body ...)
      (standard-let ((variable value) ...) body ...))
     ; Rest binding
-    ((mylet ((var val) . bindings) body ...)
+    ((my-let ((var val) . bindings) body ...)
      (let-loop #f bindings (var) (val) (body ...)))
 
     ;; Signature-style and standard named LET.
