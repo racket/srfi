@@ -981,6 +981,9 @@
     (let-string-start+end (start end) 'string-downcase! s maybe-start+end
 			  (%string-map! char-downcase s start end)))
 
+  (define (char-cased? c)
+    (not (char=? (char-downcase c) (char-upcase c))))
+
   (define (%string-titlecase! s start end)
     (let lp ((i start))
       (cond ((string-index s char-cased? i end) =>
