@@ -353,20 +353,21 @@
 
   ;; Contracts and provides ----------------------------------------
 
-  (define char-sets/c 
-    (case-> (char-set? char-set? . -> . any)
-	    ((char-set?) (listof char-set?) . ->* . any)))
-  (define char-sets+/c
-    (case-> (char-set? char-set? . -> . any)
-	    ((char-set? char-set?) (listof char-set?) . ->* . any)))
+  (define-syntax (char-sets/c stx)
+    #'(case-> (char-set? char-set? . -> . any)
+	      ((char-set?) (listof char-set?) . ->* . any)))
 
-  (define char-set-filter/c
-    (((char? . -> . any) char-set?) (char-set?) . opt-> . char-set?))
+  (define-syntax (char-sets+/c stx)
+    #'(case-> (char-set? char-set? . -> . any)
+	      ((char-set? char-set?) (listof char-set?) . ->* . any)))
+
+  (define-syntax (char-set-filter/c stx)
+    #'(((char? . -> . any) char-set?) (char-set?) . opt-> . char-set?))
 
   (define ei/c (and/c number? integer? exact?))
 
-  (define char-set-char/c
-    ((char-set?) (listof char?) . ->* . (char-set?)))
+  (define-syntax (char-set-char/c stx)
+    #'((char-set?) (listof char?) . ->* . (char-set?)))
 
   (provide
    char-set?)
