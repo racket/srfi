@@ -6,7 +6,7 @@ It is intended for PLT Scheme v200+.
 
 If you need more information on SRFI, please visit:
 
-		       http://sfri.schemers.org
+		       http://srfi.schemers.org/
 
 Loading
 -------
