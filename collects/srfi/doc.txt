@@ -33,17 +33,22 @@ or,
 
 	       (require (lib "string.ss" "srfi" "13"))
 
-** SPECIAL NOTE ON SRFI 1 **
+** SPECIAL NOTE ON SRFIs 1 and 13 **
 
-Since srfi-1 includes names that collide with mzscheme primitives,
-it is available in two forms. The wrapper, (lib "1.ss" "srfi"),
-provides names like "map" and "reverse!", and therefore cannot
-be required in a module written in the 'mzscheme' language.
-The implementation, (lib "list.ss" "srfi" "1"), supplies the
-colliding names with a prefix of 's:' (e.g. "s:map", "s:reverse!")
-and is therefore suitable for requires in a module. Use the first
-if you're writing a top-level program that wants cross-platform
-portability, use the second if you're writing a module.
+Since srfi-1 and srfi-13 include names that collide with mzscheme
+primitives, each is available in two forms. The wrappers,
+  (lib "1.ss" "srfi")
+  (lib "13.ss" "srfi")
+
+provide names like "map" and "reverse!", and therefore cannot be
+required in a module written in the 'mzscheme' language.  The
+implementations,
+  (lib "list.ss" "srfi" "1")
+  (lib "string.ss" "srfi" "13")
+supply the colliding names with a prefix of 's:' (e.g. "s:map",
+"s:reverse!")  and is therefore suitable for requires in a module. Use
+the first if you're writing a top-level program that wants
+cross-platform portability, use the second if you're writing a module.
 
 ** END OF SPECIAL NOTE **
 

@@ -119,7 +119,7 @@
    string-prefix? string-prefix-ci?
    string-suffix? string-suffix-ci?
    string-contains string-contains-ci
-   string-copy! substring/shared
+   (rename string-copy! s:string-copy!) substring/shared
    string-reverse string-reverse! reverse-list->string
    string-concatenate string-concatenate/shared string-concatenate-reverse
    string-concatenate-reverse/shared
@@ -1307,25 +1307,9 @@
 			      ((< i start))
 			    (string-set! s i char))))
 
-  (define (string-copy! to tstart from . maybe-fstart+fend)
-    (let-string-start+end (fstart fend) 'string-copy! from maybe-fstart+fend
-			  (check-arg integer? tstart 'string-copy!)
-			  (check-substring-spec string-copy! to tstart (+ tstart (- fend fstart)))
-			  (%string-copy! to tstart from fstart fend)))
-
   ;; Library-internal routine
   (define (%string-copy! to tstart from fstart fend)
-    (if (> fstart tstart)
-	(do ((i fstart (+ i 1))
-	     (j tstart (+ j 1)))
-	    ((>= i fend))
-	  (string-set! to j (string-ref from i)))
-
-	(do ((i (- fend 1)                    (- i 1))
-	     (j (+ -1 tstart (- fend fstart)) (- j 1)))
-	    ((< i fstart))
-	  (string-set! to j (string-ref from i)))))
-
+    (string-copy! to tstart from fstart fend))
 
   
   ;; Returns starting-position in STRING or #f if not true.
