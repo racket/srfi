@@ -268,9 +268,9 @@
   (define (time-nanosecond t) (tm:time-ref t 1))
   (define (time-second t)     (tm:time-ref t 2))
   
-  (define (set-time-type! t)       (tm:time-set! t 0))
-  (define (set-time-nanosecond! t) (tm:time-set! t 1))
-  (define (set-time-second! t)     (tm:time-set! t 2))
+  (define (set-time-type! t type)     (tm:time-set! t 0 type))
+  (define (set-time-nanosecond! t ns) (tm:time-set! t 1 ns))
+  (define (set-time-second! t s)      (tm:time-set! t 2 s))
   
   (define (copy-time time)
     (let ((ntime (make-time #f #f #f)))
@@ -602,14 +602,14 @@
   (define (srfi:date-year d)   (tm:date-ref d 6))
   (define (date-zone-offset d) (tm:date-ref d 7))
   
-  (define (tm:set-date-nanosecond! d)  (tm:date-set! d 0))
-  (define (tm:set-date-second! d)      (tm:date-set! d 1))
-  (define (tm:set-date-minute! d)      (tm:date-set! d 2))
-  (define (tm:set-date-hour! d)        (tm:date-set! d 3))
-  (define (tm:set-date-day! d)         (tm:date-set! d 4))
-  (define (tm:set-date-month! d)       (tm:date-set! d 5))
-  (define (tm:set-date-year! d)        (tm:date-set! d 6))
-  (define (tm:set-date-zone-offset! d) (tm:date-set! d 7))
+  (define (tm:set-date-nanosecond! d ns) (tm:date-set! d 0 ns))
+  (define (tm:set-date-second! d s)      (tm:date-set! d 1 s))
+  (define (tm:set-date-minute! d m)      (tm:date-set! d 2 m))
+  (define (tm:set-date-hour! d h)        (tm:date-set! d 3 h))
+  (define (tm:set-date-day! d day)       (tm:date-set! d 4 day))
+  (define (tm:set-date-month! d m)       (tm:date-set! d 5 m))
+  (define (tm:set-date-year! d y)        (tm:date-set! d 6 y))
+  (define (tm:set-date-zone-offset! d i) (tm:date-set! d 7 i))
   
   ;; gives the julian day which starts at noon.
   (define (tm:encode-julian-day-number day month year)
