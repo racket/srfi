@@ -61,6 +61,7 @@ number of the already ported SRFIs:
  SRFI-29            localization.ss               29
  SRFI-30(+)         30.ss
  SRFI-31            rec.ss                        31
+ SRFI-42	    comprehensions.ss             42
 
 Notes:
 ,--------------------
