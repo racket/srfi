@@ -140,7 +140,6 @@
 	   char-set:full
 	   ;; Needed by SRFI-13 (string.ss")
 	   char-cased?
-	   char-titlecase
 	   )
 
 
@@ -769,7 +768,6 @@
     (lambda (c)
       (not (char=? (char-downcase c) (char-upcase c)))))
 
-  (define char-titlecase char-upcase)
   )
 
 
