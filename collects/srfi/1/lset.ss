@@ -1,6 +1,6 @@
 ;;;
 ;;; <lset.ss> ---- Lists as Sets
-;;; Time-stamp: <02/03/01 13:59:05 noel>
+;;; Time-stamp: <03/03/13 16:20:56 noel>
 ;;;
 ;;; Copyright (C) 2002 by Noel Welsh. 
 ;;;
@@ -182,7 +182,7 @@
 			  ;; Compute a-b and a^b, then compute b-(a^b) and
 			  ;; cons it onto the front of a-b.
 			  (receive (a-b a-int-b)   (lset-diff+intersection = a b)
-					   (cond ((null? a-b)     (lset-difference b a =))
+					   (cond ((null? a-b)     (lset-difference = b a))
 							 ((null? a-int-b) (append b a))
 							 (else (fold (lambda (xb ans)
 										   (if (s:member xb a-int-b =) ans (cons xb ans)))
@@ -204,7 +204,7 @@
 			  ;; Compute a-b and a^b, then compute b-(a^b) and
 			  ;; cons it onto the front of a-b.
 			  (receive (a-b a-int-b)   (lset-diff+intersection! = a b)
-					   (cond ((null? a-b)     (lset-difference! b a =))
+					   (cond ((null? a-b)     (lset-difference! = b a))
 							 ((null? a-int-b) (append! b a))
 							 (else (pair-fold (lambda (b-pair ans)
 												(if (s:member (car b-pair) a-int-b =) ans
