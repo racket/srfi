@@ -1,5 +1,5 @@
 ;;; <localization.ss> SRFI-29: localization port to PLT Scheme -*- Scheme -*-
-;;; Time-stamp: <03/04/22 19:05:04 solsona>
+;;; Time-stamp: <03/05/08 12:49:08 solsona>
 ;;;
 ;;; Copyright (C) Scott G. Miller (2002). All Rights Reserved.
 ;;;
@@ -23,8 +23,7 @@
 ;;; Modified for PLT Scheme by: Francisco Solsona <solsona@acm.org>
 
 (module localization mzscheme
-  (require (lib "13.ss" "srfi")
-	   (lib "etc.ss"))
+  (require (lib "etc.ss"))
   (provide current-language current-country current-locale-details
 	   load-bundle! store-bundle! declare-bundle!
 	   localized-template
@@ -36,7 +35,7 @@
   (define get-from-locale
     (lambda (what)
       (let ((locale (current-locale)))
-	(if (string-null? locale)
+	(if (string=? locale "")
 	    (case what
 	      ((language) 'en) ;; Default language: English
 	      ((country) 'us) ;; Default country: US
