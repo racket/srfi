@@ -1,6 +1,6 @@
 ;;;
 ;;; <string.ss> ---- SRFI 13 port to PLT Scheme
-;;; Time-stamp: <02/04/01 13:02:51 solsona>
+;;; Time-stamp: <2004-02-12 20:31:13 solsona>
 ;;;
 ;;; Usually, I would add a copyright notice, and the announce that
 ;;; this code is under the LGPL licence.  Nevertheless, I only did the
@@ -1673,7 +1673,7 @@
       ;; string starts.
       (let lp ((len 0) (nzlist #f) (lis string-list))
 	(if (pair? lis)
-	    (let ((slen (string-length (car string-list))))
+	    (let ((slen (string-length (car lis))))
 	      (lp (+ len slen)
 		  (if (or nzlist (zero? slen)) nzlist lis)
 		  (cdr lis)))
