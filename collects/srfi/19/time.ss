@@ -1,6 +1,6 @@
 ;;;
 ;;; <time.ss> ---- SRFI 19 Time Data Types and Procedures port to PLT Scheme
-;;; Time-stamp: <03/03/13 13:39:50 solsona>
+;;; Time-stamp: <03/04/22 20:50:37 solsona>
 ;;;
 ;;; Usually, I would add a copyright notice, and the announce that
 ;;; this code is under the LGPL licence.  Nevertheless, I only did the
@@ -60,6 +60,7 @@
 
 (module time (lib "m.ss" "srfi" "19")
   (require (lib "receive.ss" "srfi" "8")
+	   (lib "29.ss" "srfi")
 	   (lib "optional.ss" "srfi"))
   (provide time-tai time-utc time-monotonic time-thread time-process time-duration time-gc
 	   current-date current-julian-day current-modified-julian-day current-time time-resolution
@@ -103,7 +104,26 @@
 	   ;; Date to String/String to Date Converters
 	   date->string string->date
 	   )
-	   
+
+  ;; SRFI-29: Localization initialization:
+  (re-read-locale)
+  (or (load-bundle! (list 'srfi-19
+			  (current-language)
+			  (current-country)
+			  (current-locale-details)))
+      ;; A little bit less specific
+      (load-bundle! (list 'srfi-19
+			  (current-language)
+			  (current-country)))
+      ;; less specific
+      (load-bundle! (list 'srfi-19 (current-language)))
+      ;; the least specific one (this one *do* exists!, it comes with this srfi) don't worry:
+      (load-bundle! (list 'srfi-19)))
+
+  (define localized-message
+    (lambda (message-name)
+      (localized-template 'srfi-19 message-name)))
+  
   ;; Constants
   (define time-tai 'time-tai)
   (define time-utc 'time-utc)
@@ -118,33 +138,31 @@
 
   ;;-- LOCALE dependent constants
 
-  (define tm:locale-number-separator ".")
+  (define tm:locale-number-separator 'separator)
 
-  (define tm:locale-abbr-weekday-vector (vector "Sun" "Mon" "Tue" "Wed"
-						"Thu" "Fri" "Sat")) 
-  (define tm:locale-long-weekday-vector (vector "Sunday" "Monday"
-						"Tuesday" "Wednesday"
-						"Thursday" "Friday"
-						"Saturday"))
+  (define tm:locale-abbr-weekday-vector (vector 'sun 'mon 'tue 'wed 'thu 'fri 'sat))
+  (define tm:locale-long-weekday-vector (vector 'sunday 'monday 'tuesday 'wednesday
+						'thursday 'friday 'saturday))
   ;; note empty string in 0th place. 
-  (define tm:locale-abbr-month-vector   (vector "" "Jan" "Feb" "Mar"
-						"Apr" "May" "Jun" "Jul"
-						"Aug" "Sep" "Oct" "Nov"
-						"Dec")) 
-  (define tm:locale-long-month-vector   (vector "" "January" "February"
-						"March" "April" "May"
-						"June" "July" "August"
-						"September" "October"
-						"November" "December")) 
+  (define tm:locale-abbr-month-vector   (vector "" 'jan 'feb 'mar
+						'apr 'may 'jun 'jul
+						'aug 'sep 'oct 'nov
+						'dec))
+  
+  (define tm:locale-long-month-vector   (vector "" 'january 'february
+						'march 'april 'may
+						'june 'july 'august
+						'september 'october
+						'november 'december)) 
 
-  (define tm:locale-pm "PM")
-  (define tm:locale-am "AM")
+  (define tm:locale-pm 'pm)
+  (define tm:locale-am 'am)
 
   ;; See date->string
-  (define tm:locale-date-time-format "~a ~b ~d ~H:~M:~S~z ~Y")
-  (define tm:locale-short-date-format "~m/~d/~y")
-  (define tm:locale-time-format "~H:~M:~S")
-  (define tm:iso-8601-date-time-format "~Y-~m-~dT~H:~M:~S~z")
+  (define tm:locale-date-time-format 'date-time)
+  (define tm:locale-short-date-format 'date)
+  (define tm:locale-time-format 'time)
+  (define tm:iso-8601-date-time-format 'iso8601)
   ;;-- Miscellaneous Constants.
   ;;-- only the tm:tai-epoch-in-jd might need changing if
   ;;   a different epoch is used.
@@ -976,7 +994,8 @@
 
   ;; Again, locale specific.
   (define (tm:locale-am/pm hr)
-    (if (> hr 11) tm:locale-pm tm:locale-am))
+    (localized-message
+     (if (> hr 11) tm:locale-pm tm:locale-am)))
 
   (define (tm:tz-printer offset port)
     (cond
@@ -999,19 +1018,23 @@
      (cons #\~ (lambda (date pad-with port) (display #\~ port)))
      
      (cons #\a (lambda (date pad-with port)
-		 (display (tm:locale-abbr-weekday (date-week-day date))
+		 (display (localized-message
+			   (tm:locale-abbr-weekday (date-week-day date)))
 			  port)))
      (cons #\A (lambda (date pad-with port)
-		 (display (tm:locale-long-weekday (date-week-day date))
+		 (display (localized-message
+			   (tm:locale-long-weekday (date-week-day date)))
 			  port)))
      (cons #\b (lambda (date pad-with port)
-		 (display (tm:locale-abbr-month (date-month date))
+		 (display (localized-message
+			   (tm:locale-abbr-month (date-month date)))
 			  port)))
      (cons #\B (lambda (date pad-with port)
-		 (display (tm:locale-long-month (date-month date))
+		 (display (localized-message
+			   (tm:locale-long-month (date-month date)))
 			  port)))
      (cons #\c (lambda (date pad-with port)
-		 (display (date->string date tm:locale-date-time-format) port)))
+		 (display (date->string date (localized-message tm:locale-date-time-format)) port)))
      (cons #\d (lambda (date pad-with port)
 		 (display (tm:padding (date-day date)
 				      #\0 2)
@@ -1039,7 +1062,7 @@
 				 (le (string-length ns)))
 			    (if (> le 2)
 				(begin
-				  (display tm:locale-number-separator port)
+				  (display (localized-message tm:locale-number-separator) port)
 				  (display (substring ns 2 le) port)))))))
      (cons #\h (lambda (date pad-with port)
 		 (display (date->string date "~b") port)))
@@ -1114,9 +1137,9 @@
      (cons #\w (lambda (date pad-with port)
 		 (display (date-week-day date) port)))
      (cons #\x (lambda (date pad-with port)
-		 (display (date->string date tm:locale-short-date-format) port)))
+		 (display (date->string date (localized-message tm:locale-short-date-format)) port)))
      (cons #\X (lambda (date pad-with port)
-		 (display (date->string date tm:locale-time-format) port)))
+		 (display (date->string date (localized-message tm:locale-time-format)) port)))
      (cons #\W (lambda (date pad-with port)
 		 (if (> (tm:days-before-first-week date 1) 0)
 		     (display (tm:padding (+ (date-week-number date 1) 1)
