@@ -1,0 +1,112 @@
+PLT Scheme support for SRFIs (`surfies')
+========================================
+
+This is an implementation of (some) SRFIs to the PLT Scheme system. 
+It is intended for PLT Scheme v200+.
+
+If you need more information on SRFI, please visit:
+
+		       http://sfri.schemers.org
+
+Loading
+-------
+
+To load a particular SRFI, use the following form:
+
+		    (require (lib "N.ss" "srfi"))
+
+if you know the number of the SRFI you want to load.  This is the
+prefered method, or this one:
+
+		 (require (lib "NAME.ss" "srfi" "N"))
+
+if you now the `informative name' of the SRFI.
+
+N, is a number corresponding to the sub-collection that holds a
+particular SRFI, and NAME is a more descriptive name we assigned to
+the main file in which the SRFI is defined.  For instance, to load
+SRFI-13 you have to do either one of:
+
+		    (require (lib "13.ss" "srfi"))
+
+or,
+
+	       (require (lib "string.ss" "srfi" "13"))
+
+Here is a table that has an SRFI, file name, and the sub-collection
+number of the already ported SRFIs:
+
+  SRFI               File name               Sub-collection
+ ========           ===========             ================
+
+ SRFI-0             cond-expand.ss                 0
+ SRFI-1             list.ss	                   1
+ SRFI-2             and-let.ss                     2
+ SRFI-5             let.ss                         5
+ SRFI-6(+)
+ SRFI-8             receive.ss                     8
+ SRFI-9             record.ss                      9
+ SRFI-11(+)
+ SRFI-13            string.ss                     13
+ SRFI-14            char-set.ss                   14
+ SRFI-16(+)
+ SRFI-17            set.ss                        17
+ SRFI-18(++)
+ SRFI-19(+++)       time.ss                       19
+ SRFI-23(+)
+ SRFI-26            cut.ss                        26
+ SRFI-28(+)
+ 
+Notes:
+,--------------------
+| +  Supported by the core of PLT Scheme
+`--------------------
+
+,--------------------
+| ++ Partially supported by the core of PLT Scheme
+`--------------------
+
+,--------------------
+| +++ time.ss provides a new implementation of the date structure.
+|     Care must be taken NOT to confuse that with the PLT's own date
+|     struct.
+|
+| A module named tm.ss is also provided with "other" procedures not
+| in the SRFI-19 document.  Instead of the expected "time"
+| structure. This port returns a tm:time structure, so that it won't
+| conflict with `time' procedure used to time an expression in PLT
+| Scheme.  
+| For example, 
+| > (current-time)
+| #<struct:tm:time>
+| 
+| so you can use: 
+| > (tm:time-seconds (current-time))
+| 13
+| 
+| Of course, all procedures expecting a "time" structure, now work with
+| a "tm:time", so that you can, for instance, do:
+| 
+| > (time->string (current-time))
+| "2002-05-10T12:50:44Z-05:00"
+`--------------------
+
+
+That's it for now.  If you have ported other SRFIs, and want them
+added to this library, please let us know:
+
+ + the main PLT Scheme discussion list:
+
+   PLT Scheme <plt-scheme@fast.cs.utah.edu>
+
+ + the Schematics-people @ sourceforge.net.  We are NOT members of the
+PLT group, the Schematics project is devoted to create code for PLT
+Scheme ONLY, though.  This SRFI port effort will try to be developed,
+tested, and debugged @ sourceforge, and periodically inserted to PLT
+Scheme.  Please, do join us!:
+
+   http://schematics.sourceforge.net
+   
+(we don't have separate mailing lists @ sourceforge.  We have a couple
+of forums there, though.  Of course, you can send us mail directly,
+or... well, we read the PLT Scheme mailing list.)
