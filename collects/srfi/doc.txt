@@ -1,5 +1,5 @@
-PLT Scheme support for SRFIs (`surfies')
-========================================
+PLT Scheme support for _SRFIs_ (`surfies')
+==========================================
 
 This is an implementation of (some) SRFIs to the PLT Scheme system. 
 It is intended for PLT Scheme v200+.
