@@ -32,7 +32,6 @@
 (module info (lib "infotab.ss" "setup")
   (define name "srfi")
 
-  (define doc-sub-collections `("4"))
   (define blurb '("SRFI collects together ports to PLT Scheme of the Scheme Request for Implementation libraries.  For further details about the SRFI process see " (a ((href "http://srfi.schemers.org/")) "http://srfi.schemers.org/")))
   )
 
