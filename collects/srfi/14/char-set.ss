@@ -87,8 +87,8 @@
 
   (define char-set-unfold
     (case-lambda
-     [(f p g seed) (char-set-unfold f p g seed char-set:empty)]
-     [(f p g seed base-cs)
+     [(p f g seed) (char-set-unfold p f g seed char-set:empty)]
+     [(p f g seed base-cs)
       ;; Implementation taken directly from SRFI-14:
       (let lp ((seed seed) (cs base-cs))
         (if (p seed) 
@@ -96,8 +96,8 @@
             (lp (g seed) ; Loop on (G SEED).
                 (char-set-adjoin! cs (f seed)))))]))
 
-  (define (char-set-unfold! f p g seed base-cs)
-    (char-set-unfold f p g seed base-cs))
+  (define (char-set-unfold! p f g seed base-cs)
+    (char-set-unfold p f g seed base-cs))
   
   (define (char-set-for-each proc cs)
     (char-set-fold (lambda (c v) (proc c)) (void) cs))
@@ -105,7 +105,7 @@
   (define (char-set-map proc cs)
     ;; Note: no order defined on cs traversal, so it doesn't
     ;;  matter that we build up the list backward
-    (char-set-fold (lambda (c v) (cons (proc c) v)) null cs))
+    (char-set-fold (lambda (c v) (char-set-adjoin v (proc c))) char-set:empty cs))
 
 
   ;; Creating character sets ----------------------------------------
@@ -250,18 +250,25 @@
 
   (define-syntax define-set-op
     (syntax-rules ()
-      [(_ char-set-op set-op)
+      [(_ char-set-op set-op neutral)
        (define char-set-op 
 	 (case-lambda
 	  [(cs1 cs2)
 	   (make-char-set (set-op (char-set-set cs1) (char-set-set cs2)))]
+	  [() 
+	   neutral]
 	  [(cs1 . more)
 	   (fold-set char-set-op cs1 more)]))]))
 
-  (define-set-op char-set-union union)
-  (define-set-op char-set-intersection intersect)
-  (define-set-op char-set-difference difference)
-  (define-set-op char-set-xor xor)
+  (define-set-op char-set-union union char-set:empty)
+  (define-set-op char-set-intersection intersect char-set:full)
+  (define char-set-difference
+    (case-lambda
+     [(cs1 cs2)
+      (make-char-set (difference (char-set-set cs1) (char-set-set cs2)))]
+     [(cs1 . more)
+      (fold-set char-set-difference cs1 more)]))
+  (define-set-op char-set-xor xor char-set:empty)
 
   (define char-set-diff+intersection
     (case-lambda
@@ -365,6 +372,10 @@
 
   ;; Contracts and provides ----------------------------------------
 
+  (define-syntax (char-sets0/c stx)
+    #'(case-> (char-set? char-set? . -> . any)
+	      (() (listof char-set?) . ->* . any)))
+
   (define-syntax (char-sets/c stx)
     #'(case-> (char-set? char-set? . -> . any)
 	      ((char-set?) (listof char-set?) . ->* . any)))
@@ -372,9 +383,6 @@
   (define-syntax (char-sets+/c stx)
     #'(case-> (char-set? char-set? . -> . any)
 	      ((char-set? char-set?) (listof char-set?) . ->* . any)))
-
-  (define-syntax (char-set-filter/c stx)
-    #'(((char? . -> . any) char-set?) (char-set?) . opt-> . char-set?))
 
   (define ei/c (and/c number? integer? exact?))
 
@@ -384,26 +392,26 @@
   (provide
    char-set?)
   (provide/contract
-   [char-set= char-sets/c]
-   [char-set<= char-sets/c]
-   [char-set-hash (char-set? . -> . any)]
+   [char-set= char-sets0/c]
+   [char-set<= char-sets0/c]
+   [char-set-hash ((char-set?) (integer?) . opt-> . integer?)]
    [char-set-cursor (char-set? . -> . any)]
    [char-set-ref (char-set? any/c . -> . char?)]
    [char-set-cursor-next (char-set? any/c . -> . any)]
    [end-of-char-set? (any/c . -> . boolean?)]
    [char-set-fold ((char? any/c . -> . any) any/c char-set? . -> . any)]
-   [char-set-unfold (((any/c . -> . char?) (any/c . -> . any) (any/c . -> . any) any/c) (char-set?) . opt-> . char-set?)]
-   [char-set-unfold! ((any/c . -> . char?) (any/c . -> . any) (any/c . -> . any) any/c char-set? . -> . char-set?)]
+   [char-set-unfold (((any/c . -> . any) (any/c . -> . char?) (any/c . -> . any) any/c) (char-set?) . opt-> . char-set?)]
+   [char-set-unfold! ((any/c . -> . any) (any/c . -> . char?) (any/c . -> . any) any/c char-set? . -> . char-set?)]
    [char-set-for-each ((char? . -> . any) char-set? . -> . any)]
-   [char-set-map ((char? . -> . any) char-set? . -> . any)]
+   [char-set-map ((char? . -> . any) char-set? . -> . char-set?)]
    [char-set-copy (char-set? . -> . char-set?)]
    [rename mk-char-set char-set (() (listof char?) . ->* . (char-set?))]
    [list->char-set (((listof char?)) (char-set?) . opt-> . char-set?)]
    [list->char-set! ((listof char?) char-set? . -> . char-set?)]
    [string->char-set ((string?) (char-set?) . opt-> . char-set?)]
    [string->char-set! (string? char-set? . -> . char-set?)]
-   [char-set-filter char-set-filter/c]
-   [char-set-filter! char-set-filter/c]
+   [char-set-filter (((char? . -> . any) char-set?) (char-set?) . opt-> . char-set?)]
+   [char-set-filter! ((char? . -> . any) char-set? char-set? . -> . char-set?)]
    [ucs-range->char-set ((ei/c ei/c) (any/c char-set?) . opt-> . char-set?)]
    [ucs-range->char-set! (ei/c ei/c any/c char-set? . -> . char-set?)]
    [->char-set ((union/c string? char? char-set?) . -> . char-set?)]
@@ -420,13 +428,13 @@
    [char-set-delete! char-set-char/c]
    [char-set-complement (char-set? . -> . char-set?)]
    [char-set-complement! (char-set? . -> . char-set?)]
-   [char-set-union char-sets/c]
+   [char-set-union char-sets0/c]
    [char-set-union! char-sets/c]
-   [char-set-intersection char-sets/c]
+   [char-set-intersection char-sets0/c]
    [char-set-intersection! char-sets/c]
-   [char-set-difference char-sets+/c]
+   [char-set-difference char-sets/c]
    [char-set-difference! char-sets+/c]
-   [char-set-xor char-sets/c]
+   [char-set-xor char-sets0/c]
    [char-set-xor! char-sets/c]
    [char-set-diff+intersection char-sets+/c]
    [char-set-diff+intersection! char-sets+/c])
