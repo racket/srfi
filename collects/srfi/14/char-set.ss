@@ -2,7 +2,7 @@
 ;; Since Matthew implemented this module, tests are in
 ;;  plt/collects/tests/mzscheme/char-set.ss.
 ;; Since Mike Sperber looked carefully at this module,
-;;  the tests are reasonably good.
+;;  the code and tests are a lot better than they would be.
 
 (module char-set mzscheme
   (require (lib "integer-set.ss")
