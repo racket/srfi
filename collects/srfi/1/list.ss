@@ -208,6 +208,10 @@
 ;;;
 ;;; The SRFI discussion record contains more discussion on this topic.
 
+;; JBC, 2003-10-20: some of the names provided by list.ss are prefixed
+;; with an s: to avoid colliding with mzscheme.  The wrapper 1.ss 
+;; changes their names back to the non-prefixed form. 
+
 (module list mzscheme
 
   (require (lib "optional.ss" "srfi"))
@@ -234,18 +238,12 @@
    (all-from "cons.ss")
    (all-from "selector.ss")
    (all-from "predicate.ss")
-   (all-from-except "misc.ss" s:append! s:reverse!)
-   (rename s:append! append!)
-   (rename s:reverse! reverse!)
-   (all-from-except "fold.ss" s:map s:for-each)
-   (rename s:map map)
-   (rename s:for-each for-each)
-   (all-from-except "search.ss" member)
-   (rename s:member member)
+   (all-from "misc.ss")
+   (all-from "fold.ss")
+   (all-from "search.ss")
    (all-from "filter.ss")
    (all-from "delete.ss")
-   (all-from-except "alist.ss" assoc)
-   (rename s:assoc assoc)
+   (all-from "alist.ss")
    (all-from "lset.ss"))
 
 
