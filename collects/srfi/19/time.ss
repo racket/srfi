@@ -58,37 +58,27 @@
 ;; -- Multiple helper procedures. TM:xxx procedures are meant to be
 ;; internal.
 
-(module time (lib "m.ss" "srfi" "19")
+(module time mzscheme
   (require (lib "receive.ss" "srfi" "8")
 	   (lib "29.ss" "srfi")
 	   (lib "optional.ss" "srfi"))
   (provide time-tai time-utc time-monotonic time-thread time-process time-duration time-gc
 	   current-date current-julian-day current-modified-julian-day current-time time-resolution
-	   ;; FIXME:
-	   ;; We won't export the time structure used in SRFI-19.  It
-	   ;; conflicts with the time symbol already present in PLT
-	   ;; Scheme!
-	   ;; (struct time (type second nanosecond))
+           ;; Time object and accessors
+           make-time time? time-type time-nanosecond 
+           time-second set-time-type! set-time-nanosecond! set-time-second!
+           copy-time
 	   ;; Time comparison
 	   time<=? time<? time=? time>=? time>?
 	   ;; Time arithmetic
 	   time-difference time-difference! add-duration add-duration! subtract-duration subtract-duration!
+           ;; Date object and accessors
 	   ;; date structure is provided by core PLT Scheme, we just extended tu support miliseconds:
-	   ;; (struct date (nanosecond second minute hour day month year zone-offset) -setters)
-	   (rename make-date tm:make-date)
-	   (rename date? tm:date?)
-	   (rename date-nanosecond tm:date-nanosecond)
-	   (rename date-second tm:date-second)
-	   (rename date-minute tm:date-minute)
-	   (rename date-hour tm:date-hour)
-	   (rename date-day tm:date-day)
-	   (rename date-month tm:date-month)
-	   (rename date-year tm:date-year)
-	   (rename date-zone-offset tm:date-zone-offset)
+           make-srfi:date srfi:date?
+	   date-nanosecond srfi:date-second srfi:date-minute srfi:date-hour srfi:date-day srfi:date-month
+           srfi:date-year date-zone-offset
 	   ;; This are not part of the date structure (as they are in the original PLT Scheme's date)
-	   (rename date-year-day tm:date-year-day)
-	   (rename date-week-day tm:date-week-day)
-	   (rename date-week-number tm:date-week-number)
+	   srfi:date-year-day srfi:date-week-day date-week-number
 
 	   ;; The following procedures work with this modified version.
 	   
@@ -270,8 +260,18 @@
       (if (< tai-seconds  (* (- 1972 1970) 365 tm:sid)) 0
 	  (lsd  tm:leap-second-table))))
   
-  (define-struct time (type nanosecond second) (make-inspector))
-
+  (define-values (tm:time make-time time? tm:time-ref tm:time-set!)
+    (make-struct-type 
+     'tm:time #f 3 0 #f null (make-inspector) #f null))
+  
+  (define (time-type t)       (tm:time-ref t 0))
+  (define (time-nanosecond t) (tm:time-ref t 1))
+  (define (time-second t)     (tm:time-ref t 2))
+  
+  (define (set-time-type! t)       (tm:time-set! t 0))
+  (define (set-time-nanosecond! t) (tm:time-set! t 1))
+  (define (set-time-second! t)     (tm:time-set! t 2))
+  
   (define (copy-time time)
     (let ((ntime (make-time #f #f #f)))
       (set-time-type! ntime (time-type time))
@@ -578,7 +578,9 @@
     time-in)
 
   ;; -- Date Structures
-  (define-struct date (nanosecond second minute hour day month year zone-offset) (make-inspector))
+  (define-values (tm:date make-srfi:date srfi:date? tm:date-ref tm:date-set!)
+    (make-struct-type 
+     'tm:date #f 8 0 #f null (make-inspector) #f null))
   ;; PLT Scheme date structure has the following:
   ;;   * second : 0 to 61 (60 and 61 are for unusual leap-seconds)
   ;;   * minute : 0 to 59
@@ -591,37 +593,24 @@
   ;;   * dst? : #t (daylight savings time) or #f
   ;;   * time-zone-offset : the number of seconds east of GMT for this time zone (e.g., Pacific Standard Time is -28800), an exact integer 36
   
-  ;; redefine setters
-
-  (define tm:set-date-nanosecond! set-date-nanosecond!)
-  (define tm:set-date-second! set-date-second!)
-  (define tm:set-date-minute! set-date-minute!)
-  (define tm:set-date-hour! set-date-hour!)
-  (define tm:set-date-day! set-date-day!)
-  (define tm:set-date-month! set-date-month!)
-  (define tm:set-date-year! set-date-year!)
-  (define tm:set-date-zone-offset! set-date-zone-offset!)
-
-  ;; PLT Scheme won't let this redefinitions to work with the module system.
-  ;; NOTE: We can live with this, can't we?
-;;   (define (set-date-second! date val)
-;;     (tm:time-error 'set-date-second! 'dates-are-immutable date))
-;; 
-;;   (define (set-date-minute! date val)
-;;     (tm:time-error 'set-date-minute! 'dates-are-immutable date))
-;; 
-;;   (define (set-date-day! date val)
-;;     (tm:time-error 'set-date-day! 'dates-are-immutable date))
-;; 
-;;   (define (set-date-month! date val)
-;;     (tm:time-error 'set-date-month! 'dates-are-immutable date))
-;; 
-;;   (define (set-date-year! date val)
-;;     (tm:time-error 'set-date-year! 'dates-are-immutable date))
-;; 
-;;   (define (set-date-zone-offset! date val)
-;;     (tm:time-error 'set-date-zone-offset! 'dates-are-immutable date))
-;;   
+  (define (date-nanosecond d)  (tm:date-ref d 0))
+  (define (srfi:date-second d) (tm:date-ref d 1))
+  (define (srfi:date-minute d) (tm:date-ref d 2))
+  (define (srfi:date-hour d)   (tm:date-ref d 3))
+  (define (srfi:date-day d)    (tm:date-ref d 4))
+  (define (srfi:date-month d)  (tm:date-ref d 5))
+  (define (srfi:date-year d)   (tm:date-ref d 6))
+  (define (date-zone-offset d) (tm:date-ref d 7))
+  
+  (define (tm:set-date-nanosecond! d)  (tm:date-set! d 0))
+  (define (tm:set-date-second! d)      (tm:date-set! d 1))
+  (define (tm:set-date-minute! d)      (tm:date-set! d 2))
+  (define (tm:set-date-hour! d)        (tm:date-set! d 3))
+  (define (tm:set-date-day! d)         (tm:date-set! d 4))
+  (define (tm:set-date-month! d)       (tm:date-set! d 5))
+  (define (tm:set-date-year! d)        (tm:date-set! d 6))
+  (define (tm:set-date-zone-offset! d) (tm:date-set! d 7))
+  
   ;; gives the julian day which starts at noon.
   (define (tm:encode-julian-day-number day month year)
     (let* ((a (quotient (- 14 month) 12))
@@ -674,9 +663,8 @@
   ;; relies on the fact that we named our time zone accessor
   ;; differently from MzScheme's....
   ;; This should be written to be OS specific.
-  ;; NOTE: defined in module: (lib "m.ss" "srfi" "19")
-  ;; (define (tm:local-tz-offset)
-  ;;   (date-time-zone-offset (seconds->date (current-seconds))))
+  (define (tm:local-tz-offset)
+    (date-time-zone-offset (seconds->date (current-seconds))))
 
   ;; special thing -- ignores nanos
   (define (tm:time->julian-day-number seconds tz-offset)
@@ -709,14 +697,14 @@
 		       (rem      (remainder secs (* 60 60)))
 		       (minutes  (quotient rem 60))
 		       (seconds  (remainder rem 60)) )
-		 (make-date (time-nanosecond time)
-			    seconds
-			    minutes
-			    hours
-			    date
-			    month
-			    year
-			    offset)))))
+		 (make-srfi:date (time-nanosecond time)
+                                 seconds
+                                 minutes
+                                 hours
+                                 date
+                                 month
+                                 year
+                                 offset)))))
   
 
 
@@ -737,12 +725,12 @@
 
   (define (date->time-utc date)
     (let ( (nanosecond (date-nanosecond date))
-	   (second (date-second date))
-	   (minute (date-minute date))
-	   (hour (date-hour date))
-	   (day (date-day date))
-	   (month (date-month date))
-	   (year (date-year date))
+	   (second (srfi:date-second date))
+	   (minute (srfi:date-minute date))
+	   (hour (srfi:date-hour date))
+	   (day (srfi:date-day date))
+	   (month (srfi:date-month date))
+	   (year (srfi:date-year date))
 	   (offset (date-zone-offset date)) )
       (let ( (jdays (- (tm:encode-julian-day-number day month year)
 		       tm:tai-epoch-in-jd)) )
@@ -757,7 +745,7 @@
 	 ))))
 
   (define (date->time-tai d)
-    (if (= (date-second d) 60)
+    (if (= (srfi:date-second d) 60)
 	(subtract-duration! (time-utc->time-tai! (date->time-utc d)) (make-time time-duration 0 1))
 	(time-utc->time-tai! (date->time-utc d))))
 
@@ -770,7 +758,7 @@
 	(and (= (modulo year 4) 0) (not (= (modulo year 100) 0)))))
 
   (define (leap-year? date)
-    (tm:leap-year? (date-year date)))
+    (tm:leap-year? (srfi:date-year date)))
   
   ;; tm:year-day fixed: adding wrong number of days.
   (define  tm:month-assoc '((0 . 0) (1 . 31)  (2 . 59)   (3 . 90)   (4 . 120) 
@@ -785,8 +773,8 @@
 	  (+ day (cdr days-pr) 1)
 	  (+ day (cdr days-pr)))))
 
-  (define (date-year-day date)
-    (tm:year-day (date-day date) (date-month date) (date-year date)))
+  (define (srfi:date-year-day date)
+    (tm:year-day (srfi:date-day date) (srfi:date-month date) (srfi:date-year date)))
 
   ;; from calendar faq 
   (define (tm:week-day day month year)
@@ -797,21 +785,21 @@
 		 (quotient y 400) (quotient (* 31 m) 12))
 	      7)))
 
-  (define (date-week-day date)
-    (tm:week-day (date-day date) (date-month date) (date-year date)))
+  (define (srfi:date-week-day date)
+    (tm:week-day (srfi:date-day date) (srfi:date-month date) (srfi:date-year date)))
 
   (define (tm:days-before-first-week date day-of-week-starting-week)
-    (let* ( (first-day (make-date 0 0 0 0
-				  1
-				  1
-				  (date-year date)
-				  #f))
-	    (fdweek-day (date-week-day first-day))  )
+    (let* ( (first-day (make-srfi:date 0 0 0 0
+                                       1
+                                       1
+                                       (srfi:date-year date)
+                                       #f))
+	    (fdweek-day (srfi:date-week-day first-day))  )
       (modulo (- day-of-week-starting-week fdweek-day)
 	      7)))
 
   (define (date-week-number date day-of-week-starting-week)
-    (quotient (- (date-year-day date)
+    (quotient (- (srfi:date-year-day date)
 		 (tm:days-before-first-week  date day-of-week-starting-week))
 	      7))
 
@@ -821,7 +809,7 @@
 
   ;; given a 'two digit' number, find the year within 50 years +/-
   (define (tm:natural-year n)
-    (let* ( (current-year (date-year (current-date)))
+    (let* ( (current-year (srfi:date-year (current-date)))
 	    (current-century (* (quotient current-year 100) 100)) )
       (cond
        ((>= n 100) n)
@@ -833,12 +821,12 @@
 
   (define (date->julian-day date)
     (let ( (nanosecond (date-nanosecond date))
-	   (second (date-second date))
-	   (minute (date-minute date))
-	   (hour (date-hour date))
-	   (day (date-day date))
-	   (month (date-month date))
-	   (year (date-year date))
+	   (second (srfi:date-second date))
+	   (minute (srfi:date-minute date))
+	   (hour (srfi:date-hour date))
+	   (day (srfi:date-day date))
+	   (month (srfi:date-month date))
+	   (year (srfi:date-year date))
 	   (offset (date-zone-offset date)) )
       (+ (tm:encode-julian-day-number day month year)
 	 (- 1/2)
@@ -1018,36 +1006,36 @@
      (cons #\~ (lambda (date pad-with port) (display #\~ port)))
      
      (cons #\a (lambda (date pad-with port)
-		 (display (tm:locale-abbr-weekday (date-week-day date))
+		 (display (tm:locale-abbr-weekday (srfi:date-week-day date))
 			  port)))
      (cons #\A (lambda (date pad-with port)
-		 (display (tm:locale-long-weekday (date-week-day date))
+		 (display (tm:locale-long-weekday (srfi:date-week-day date))
 			  port)))
      (cons #\b (lambda (date pad-with port)
-		 (display (tm:locale-abbr-month (date-month date))
+		 (display (tm:locale-abbr-month (srfi:date-month date))
 			  port)))
      (cons #\B (lambda (date pad-with port)
-		 (display (tm:locale-long-month (date-month date))
+		 (display (tm:locale-long-month (srfi:date-month date))
 			  port)))
      (cons #\c (lambda (date pad-with port)
 		 (display (date->string date (localized-message tm:locale-date-time-format)) port)))
      (cons #\d (lambda (date pad-with port)
-		 (display (tm:padding (date-day date)
+		 (display (tm:padding (srfi:date-day date)
 				      #\0 2)
 			  port)))
      (cons #\D (lambda (date pad-with port)
 		 (display (date->string date "~m/~d/~y") port)))
      (cons #\e (lambda (date pad-with port)
-		 (display (tm:padding (date-day date)
+		 (display (tm:padding (srfi:date-day date)
 				      #\Space 2)
 			  port)))
      (cons #\f (lambda (date pad-with port)
 		 (if (> (date-nanosecond date)
 			tm:nano)
-		     (display (tm:padding (+ (date-second date) 1)
+		     (display (tm:padding (+ (srfi:date-second date) 1)
 					  pad-with 2)
 			      port)
-		     (display (tm:padding (date-second date)
+		     (display (tm:padding (srfi:date-second date)
 					  pad-with 2)
 			      port))
 		 (receive (i f) 
@@ -1063,11 +1051,11 @@
      (cons #\h (lambda (date pad-with port)
 		 (display (date->string date "~b") port)))
      (cons #\H (lambda (date pad-with port)
-		 (display (tm:padding (date-hour date)
+		 (display (tm:padding (srfi:date-hour date)
 				      pad-with 2)
 			  port)))
      (cons #\I (lambda (date pad-with port)
-		 (let ((hr (date-hour date)))
+		 (let ((hr (srfi:date-hour date)))
 		   (if (> hr 12)
 		       (display (tm:padding (- hr 12)
 					    pad-with 2)
@@ -1076,24 +1064,24 @@
 					    pad-with 2)
 				port)))))
      (cons #\j (lambda (date pad-with port)
-		 (display (tm:padding (date-year-day date)
+		 (display (tm:padding (srfi:date-year-day date)
 				      pad-with 3)
 			  port)))
      (cons #\k (lambda (date pad-with port)
-		 (display (tm:padding (date-hour date)
+		 (display (tm:padding (srfi:date-hour date)
 				      #\0 2)
 			  port)))
      (cons #\l (lambda (date pad-with port)
-		 (let ((hr (if (> (date-hour date) 12)
-			       (- (date-hour date) 12) (date-hour date))))
+		 (let ((hr (if (> (srfi:date-hour date) 12)
+			       (- (srfi:date-hour date) 12) (srfi:date-hour date))))
 		   (display (tm:padding hr  #\Space 2)
 			    port))))
      (cons #\m (lambda (date pad-with port)
-		 (display (tm:padding (date-month date)
+		 (display (tm:padding (srfi:date-month date)
 				      pad-with 2)
 			  port)))
      (cons #\M (lambda (date pad-with port)
-		 (display (tm:padding (date-minute date)
+		 (display (tm:padding (srfi:date-minute date)
 				      pad-with 2)
 			  port)))
      (cons #\n (lambda (date pad-with port)
@@ -1103,7 +1091,7 @@
 				      pad-with 7)
 			  port)))
      (cons #\p (lambda (date pad-with port)
-		 (display (tm:locale-am/pm (date-hour date)) port)))
+		 (display (tm:locale-am/pm (srfi:date-hour date)) port)))
      (cons #\r (lambda (date pad-with port)
 		 (display (date->string date "~I:~M:~S ~p") port)))
      (cons #\s (lambda (date pad-with port)
@@ -1111,10 +1099,10 @@
      (cons #\S (lambda (date pad-with port)
 		 (if (> (date-nanosecond date)
 			tm:nano)
-		     (display (tm:padding (+ (date-second date) 1)
+		     (display (tm:padding (+ (srfi:date-second date) 1)
 					  pad-with 2)
 			      port)
-		     (display (tm:padding (date-second date)
+		     (display (tm:padding (srfi:date-second date)
 					  pad-with 2)
 			      port))))
      (cons #\t (lambda (date pad-with port)
@@ -1131,7 +1119,7 @@
 		 (display (tm:padding (date-week-number date 1)
 				      #\0 2) port)))
      (cons #\w (lambda (date pad-with port)
-		 (display (date-week-day date) port)))
+		 (display (srfi:date-week-day date) port)))
      (cons #\x (lambda (date pad-with port)
 		 (display (date->string date (localized-message tm:locale-short-date-format)) port)))
      (cons #\X (lambda (date pad-with port)
@@ -1144,12 +1132,12 @@
 					  #\0 2) port))))
      (cons #\y (lambda (date pad-with port)
 		 (display (tm:padding (tm:last-n-digits 
-				       (date-year date) 2)
+				       (srfi:date-year date) 2)
 				      pad-with
 				      2)
 			  port)))
      (cons #\Y (lambda (date pad-with port)
-		 (display (date-year date) port)))
+		 (display (srfi:date-year date) port)))
      (cons #\z (lambda (date pad-with port)
 		 (tm:tz-printer (date-zone-offset date) port)))
      (cons #\Z (lambda (date pad-with port)
@@ -1471,14 +1459,14 @@
   (define (string->date input-string template-string)
     (define (tm:date-ok? date)
       (and (date-nanosecond date)
-	   (date-second date)
-	   (date-minute date)
-	   (date-hour date)
-	   (date-day date)
-	   (date-month date)
-	   (date-year date)
+	   (srfi:date-second date)
+	   (srfi:date-minute date)
+	   (srfi:date-hour date)
+	   (srfi:date-day date)
+	   (srfi:date-month date)
+	   (srfi:date-year date)
 	   (date-zone-offset date)))
-    (let ( (newdate (make-date 0 0 0 0 #f #f #f (tm:local-tz-offset))) )
+    (let ( (newdate (make-srfi:date 0 0 0 0 #f #f #f (tm:local-tz-offset))) )
       (tm:string->date newdate
 		       0
 		       template-string
