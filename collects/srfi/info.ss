@@ -1,6 +1,6 @@
 ;;;
 ;;; <info.ss> ---- info file for SRFI collection
-;;; Time-stamp: <02/08/16 12:55:18 solsona>
+;;; Time-stamp: <03/03/13 19:43:13 solsona>
 ;;;
 ;;; Copyright (C) 2002 by Noel Welsh. 
 ;;;
@@ -33,7 +33,7 @@
   (define name "srfi")
 
   (define compile-omit-files
-    '("optional.ss" "and-let.ss" "receive.ss" "record.ss" "1.ss" "13.ss" "14.ss" "17.ss" "19.ss" "2.ss" "26.ss" "5.ss" "8.ss" "9.ss"))
+    '("optional.ss" "and-let.ss" "receive.ss" "record.ss" "1.ss" "13.ss" "14.ss" "17.ss" "19.ss" "2.ss" "26.ss" "5.ss" "8.ss" "9.ss" "7.ss"))
 
   (define blurb '("SRFI collects together ports to PLT Scheme of the Scheme Request for Implementation libraries.  For further details about the SRFI process see " (a ((href "http://srfi.schemers.org/")) "http://srfi.schemers.org/")))
   )
