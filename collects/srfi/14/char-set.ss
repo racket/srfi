@@ -246,7 +246,7 @@
   (define (char-set-complement cs)
     (make-char-set
      (union (complement (char-set-set cs) #x0 #xD7FF)
-	    (complement (char-set-set cs) #xE000 #x1FFFFF))))
+	    (complement (char-set-set cs) #xE000 #x10FFFF))))
 
   (define-syntax define-set-op
     (syntax-rules ()
@@ -366,7 +366,7 @@
   (define char-set:empty
     (make-char-set (make-integer-set '())))
   (define char-set:full
-    (make-char-set (make-integer-set '((#x0 . #xD7FF) (#xE000 . #x1FFFFF)))))
+    (make-char-set (make-integer-set '((#x0 . #xD7FF) (#xE000 . #x10FFFF)))))
 
   
 
