@@ -39,7 +39,8 @@
 		   "predicate.ss"
 		   "selector.ss"
 		   "util.ss"
-		   (rename "fold.ss" reduce-right reduce-right))
+		   (rename "fold.ss" reduce-right reduce-right)
+		   (rename "fold.ss" srfi-1:map map))
   (require (lib "receive.ss" "srfi" "8"))
 
   (provide length+
@@ -93,7 +94,7 @@
 
 
 
-  (define (zip list1 . more-lists) (apply map list list1 more-lists))
+  (define (zip list1 . more-lists) (apply srfi-1:map list list1 more-lists))
 
   ;; Unzippers -- 1 through 5
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
