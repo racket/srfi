@@ -151,16 +151,28 @@
      [(lower upper error?) (ucs-range->char-set lower upper error? char-set:empty)]
      [(lower upper error? cs)
       (when (or (lower . < . 0)
-		(upper . > . #x200000))
-	(error 'ucs-range->char-set "invalid range: [~a, ~a)" lower upper))
+		(upper . > . #x200000)
+		(lower . >= . upper))
+	(raise (make-exn:fail:contract
+		(string->immutable-string
+		 (format "ucs-range->char-set: invalid range: [~a, ~a)" lower upper))
+		(current-continuation-marks))))
       (char-set-union cs
-		      (if (or (upper . <= . #xD800)
-			      (lower . > . #E0000))
-			  ;; No holes
-			  (make-char-set (make-integer-set (list (cons lower (sub1 upper)))))
-			  ;; Spans the hole:
-			  (make-char-set (make-integer-set (list (cons lower #xD7FF)
-								 (cons #E000 (sub1 upper)))))))]))
+		      (cond
+		       [(and (upper . <= . #xE000)
+			     (lower . >= . #xD800))
+			;; Completely in the hole
+			char-set:empty]
+		       [(upper . <= . #xE000)
+			;; Below the hole
+			(make-char-set (make-integer-set (list (cons lower (sub1 (min #xD800 upper))))))]
+		       [(lower . >= . #xD800)
+			;; Above the hole
+			(make-char-set (make-integer-set (list (cons (max #xE000 lower) (sub1 upper)))))]
+		       [else
+			;; Spans the hole:
+			(make-char-set (make-integer-set (list (cons lower #xD7FF)
+							       (cons #xE000 (sub1 upper)))))]))]))
   (define (ucs-range->char-set! lower upper error? base-cs)
     (ucs-range->char-set lower upper error? base-cs))
 
