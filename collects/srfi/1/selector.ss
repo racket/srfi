@@ -131,7 +131,7 @@
 		(let* ((prev (drop x (- k 1)))
 			   (suffix (cdr prev)))
 		  (set-cdr! prev '())
-		  (values x suf;fix))))
+		  (values x suffix))))
   
   
   (define (last lis) (car (last-pair lis)))

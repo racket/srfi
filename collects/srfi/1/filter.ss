@@ -58,7 +58,7 @@
   ;; made more efficient.
 
   (define (filter pred lis)			; Sleazing with EQ? makes this
-	(check-arg procedure? pred filter)		; one faster.
+	(check-arg procedure? pred 'filter)		; one faster.
 	(let recur ((lis lis))		
 	  (if (null-list? lis) lis			; Use NOT-PAIR? to handle dotted lists.
 		  (let ((head (car lis))
@@ -82,7 +82,7 @@
   ;; minimal number of SET-CDR!s to splice the tail of one run of ins to the 
   ;; beginning of the next.
   (define (filter! pred lis)
-	(check-arg procedure? pred filter!)
+	(check-arg procedure? pred 'filter!)
 	(let lp ((ans lis))
 	  (cond ((null-list? ans)       ans) ; Scan looking for
 			((not (pred (car ans))) (lp (cdr ans)))	; first cons of result.
@@ -118,7 +118,7 @@
   ;; Answers share common tail with LIS where possible; 
   ;; the technique is slightly subtle.
   (define (partition pred lis)
-	(check-arg procedure? pred partition)
+	(check-arg procedure? pred 'partition)
 	(let recur ((lis lis))
 	  (if (null-list? lis) (values lis lis)	; Use NOT-PAIR? to handle dotted lists.
 		  (let ((elt (car lis))
@@ -139,7 +139,7 @@
   ;; minimal number of SET-CDR!s to splice these runs together into the result 
   ;; lists.
   (define (partition! pred lis)
-	(check-arg procedure? pred partition!)
+	(check-arg procedure? pred 'partition!)
 	(if (null-list? lis) (values lis lis)
 		
 		;; This pair of loops zips down contiguous in & out runs of the

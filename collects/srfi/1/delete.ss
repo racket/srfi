@@ -68,7 +68,7 @@
   (define delete-duplicates
 	(opt-lambda (lis (maybe-= equal?))
 				(let ((elt= maybe-=))
-				  (check-arg procedure? elt= delete-duplicates)
+				  (check-arg procedure? elt= 'delete-duplicates)
 				  (let recur ((lis lis))
 					(if (null-list? lis) lis
 						(let* ((x (car lis))
@@ -79,7 +79,7 @@
   (define delete-duplicates!
 	(opt-lambda (lis (maybe-= equal?))
 				(let ((elt= maybe-=))
-				  (check-arg procedure? elt= delete-duplicates!)
+				  (check-arg procedure? elt= 'delete-duplicates!)
 				  (let recur ((lis lis))
 					(if (null-list? lis) lis
 						(let* ((x (car lis))

@@ -61,7 +61,7 @@
   ;; count
   ;;;;;;;;
   (define (count pred list1 . lists)
-	(check-arg procedure? pred count)
+	(check-arg procedure? pred 'count)
 	(if (pair? lists)
 
 		;; N-ary case

@@ -56,7 +56,7 @@
   
   (define make-list
 	(opt-lambda (len  [elt #f])
-	  (check-arg (lambda (n) (and (integer? n) (>= n 0))) len make-list)
+	  (check-arg (lambda (n) (and (integer? n) (>= n 0))) len 'make-list)
 	  (do ((i len (- i 1))
 		   (ans '() (cons elt ans)))
 		  ((<= i 0) ans))))
@@ -65,8 +65,8 @@
   ;; Make a list of length LEN. Elt i is (PROC i) for 0 <= i < LEN.
   
   (define (list-tabulate len proc)
-	(check-arg (lambda (n) (and (integer? n) (>= n 0))) len list-tabulate)
-	(check-arg procedure? proc list-tabulate)
+	(check-arg (lambda (n) (and (integer? n) (>= n 0))) len 'list-tabulate)
+	(check-arg procedure? proc 'list-tabulate)
 	(do ((i (- len 1) (- i 1))
 		 (ans '() (cons (proc i) ans)))
 		((< i 0) ans)))
