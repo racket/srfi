@@ -69,14 +69,14 @@
 		  (else #f)))
 
   (define (find-tail pred list)
-	(check-arg procedure? pred find-tail)
+	(check-arg procedure? pred 'find-tail)
 	(let lp ((list list))
 	  (and (not (null-list? list))
 		   (if (pred (car list)) list
 			   (lp (cdr list))))))
   
   (define (take-while pred lis)
-	(check-arg procedure? pred take-while)
+	(check-arg procedure? pred 'take-while)
 	(let recur ((lis lis))
 	  (if (null-list? lis) '()
 		  (let ((x (car lis)))
@@ -85,7 +85,7 @@
 				'())))))
   
   (define (drop-while pred lis)
-	(check-arg procedure? pred drop-while)
+	(check-arg procedure? pred 'drop-while)
 	(let lp ((lis lis))
 	  (if (null-list? lis) '()
 		  (if (pred (car lis))
@@ -93,7 +93,7 @@
 			  lis))))
   
   (define (take-while! pred lis)
-	(check-arg procedure? pred take-while!)
+	(check-arg procedure? pred 'take-while!)
 	(if (or (null-list? lis) (not (pred (car lis)))) '()
 		(begin (let lp ((prev lis) (rest (cdr lis)))
 				 (if (pair? rest)
@@ -103,7 +103,7 @@
 			   lis)))
   
   (define (span pred lis)
-	(check-arg procedure? pred span)
+	(check-arg procedure? pred 'span)
 	(let recur ((lis lis))
 	  (if (null-list? lis) (values '() '())
 		  (let ((x (car lis)))
@@ -113,7 +113,7 @@
 				(values '() lis))))))
 
   (define (span! pred lis)
-	(check-arg procedure? pred span!)
+	(check-arg procedure? pred 'span!)
 	(if (or (null-list? lis) (not (pred (car lis)))) (values '() lis)
 		(let ((suffix (let lp ((prev lis) (rest (cdr lis)))
 						(if (null-list? rest) rest
@@ -128,7 +128,7 @@
   (define (break! pred lis) (span! (lambda (x) (not (pred x))) lis))
   
   (define (any pred lis1 . lists)
-	(check-arg procedure? pred any)
+	(check-arg procedure? pred 'any)
 	(if (pair? lists)
 		
       ;; N-ary case
@@ -155,7 +155,7 @@
 ;             (lp (cdr list))))))
 
   (define (every pred lis1 . lists)
-	(check-arg procedure? pred every)
+	(check-arg procedure? pred 'every)
 	(if (pair? lists)
 		
 		;; N-ary case
@@ -175,7 +175,7 @@
 				  (and (pred head) (lp (car tail) (cdr tail))))))))
 
   (define (list-index pred lis1 . lists)
-	(check-arg procedure? pred list-index)
+	(check-arg procedure? pred 'list-index)
 	(if (pair? lists)
 		
 		;; N-ary case

@@ -63,9 +63,9 @@
   ;;;;;;;;;;;;;;
   
   (define (unfold-right p f g seed . maybe-tail)
-	(check-arg procedure? p unfold-right)
-	(check-arg procedure? f unfold-right)
-	(check-arg procedure? g unfold-right)
+	(check-arg procedure? p 'unfold-right)
+	(check-arg procedure? f 'unfold-right)
+	(check-arg procedure? g 'unfold-right)
 	(let lp ((seed seed) (ans maybe-tail))
 	  (if (p seed) ans
 		  (lp (g seed)
@@ -73,9 +73,9 @@
   
   
   (define (unfold p f g seed . maybe-tail-gen)
-	(check-arg procedure? p unfold)
-	(check-arg procedure? f unfold)
-	(check-arg procedure? g unfold)
+	(check-arg procedure? p 'unfold)
+	(check-arg procedure? f 'unfold)
+	(check-arg procedure? g 'unfold)
 	(if (pair? maybe-tail-gen)
 		
 		(let ((tail-gen (car maybe-tail-gen)))
@@ -92,7 +92,7 @@
   
   
   (define (fold kons knil lis1 . lists)
-	(check-arg procedure? kons fold)
+	(check-arg procedure? kons 'fold)
 	(if (pair? lists)
 		(let lp ((lists (cons lis1 lists)) (ans knil))	; N-ary case
 		  (receive (cars+ans cdrs) (%cars+cdrs+ lists ans)
@@ -105,7 +105,7 @@
   
   
   (define (fold-right kons knil lis1 . lists)
-	(check-arg procedure? kons fold-right)
+	(check-arg procedure? kons 'fold-right)
 	(if (pair? lists)
 		(let recur ((lists (cons lis1 lists)))		; N-ary case
 		  (let ((cdrs (%cdrs lists)))
@@ -119,7 +119,7 @@
   
   
   (define (pair-fold-right f zero lis1 . lists)
-	(check-arg procedure? f pair-fold-right)
+	(check-arg procedure? f 'pair-fold-right)
 	(if (pair? lists)
 		(let recur ((lists (cons lis1 lists)))		; N-ary case
 		  (let ((cdrs (%cdrs lists)))
@@ -130,7 +130,7 @@
 		  (if (null-list? lis) zero (f lis (recur (cdr lis)))))))
   
   (define (pair-fold f zero lis1 . lists)
-	(check-arg procedure? f pair-fold)
+	(check-arg procedure? f 'pair-fold)
 	(if (pair? lists)
 		(let lp ((lists (cons lis1 lists)) (ans zero))	; N-ary case
 		  (let ((tails (%cdrs lists)))
@@ -147,12 +147,12 @@
   ;; These cannot meaningfully be n-ary.
   
   (define (reduce f ridentity lis)
-	(check-arg procedure? f reduce)
+	(check-arg procedure? f 'reduce)
 	(if (null-list? lis) ridentity
 		(fold f (car lis) (cdr lis))))
   
   (define (reduce-right f ridentity lis)
-	(check-arg procedure? f reduce-right)
+	(check-arg procedure? f 'reduce-right)
 	(if (null-list? lis) ridentity
 		(let recur ((head (car lis)) (lis (cdr lis)))
 		  (if (pair? lis)
@@ -170,7 +170,7 @@
 	(really-append-map append-map! append! f lis1 lists))
   
   (define (really-append-map who appender f lis1 lists)
-	(check-arg procedure? f who)
+	(check-arg procedure? f 'who)
 	(if (pair? lists)
 		(receive (cars cdrs) (%cars+cdrs (cons lis1 lists))
 				 (if (null? cars) '()
@@ -189,7 +189,7 @@
   
   
   (define (pair-for-each proc lis1 . lists)
-	(check-arg procedure? proc pair-for-each)
+	(check-arg procedure? proc 'pair-for-each)
 	(if (pair? lists)
 		
 		(let lp ((lists (cons lis1 lists)))
@@ -207,7 +207,7 @@
   
   ;; We stop when LIS1 runs out, not when any list runs out.
   (define (map! f lis1 . lists)
-	(check-arg procedure? f map!)
+	(check-arg procedure? f 'map!)
 	(if (pair? lists)
 		(let lp ((lis1 lis1) (lists lists))
 		  (if (not (null-list? lis1))
@@ -222,7 +222,7 @@
   
   ;; Map F across L, and save up all the non-false results.
   (define (filter-map f lis1 . lists)
-	(check-arg procedure? f filter-map)
+	(check-arg procedure? f 'filter-map)
 	(if (pair? lists)
 		(let recur ((lists (cons lis1 lists)))
 		  (receive (cars cdrs) (%cars+cdrs lists)
@@ -244,7 +244,7 @@
   ;; in which case this procedure may simply be defined as a synonym for MAP.
   
   (define (map-in-order f lis1 . lists)
-	(check-arg procedure? f map-in-order)
+	(check-arg procedure? f 'map-in-order)
 	(if (pair? lists)
 		(let recur ((lists (cons lis1 lists)))
 		  (receive (cars cdrs) (%cars+cdrs lists)
