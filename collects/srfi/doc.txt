@@ -57,6 +57,7 @@ number of the already ported SRFIs:
  SRFI-23(+)         23.ss
  SRFI-25            array.ss                      25
  SRFI-26            cut.ss                        26
+ SRFI-27            random-bits.ss                27
  SRFI-28(+)         28.ss
  SRFI-29            localization.ss               29
  SRFI-30(+)         30.ss
