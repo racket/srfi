@@ -1,5 +1,6 @@
 ;;;
 ;;; <info.ss> ---- info file for SRFI collection
+
 ;;; Time-stamp: <03/03/27 19:29:44 solsona>
 ;;;
 ;;; Copyright (C) 2002 by Noel Welsh. 
@@ -31,6 +32,7 @@
 
 (module info (lib "infotab.ss" "setup")
   (define name "srfi")
+  (define doc.txt "doc.txt")
 
   (define blurb '("SRFI collects together ports to PLT Scheme of the Scheme Request for Implementation libraries.  For further details about the SRFI process see " (a ((href "http://srfi.schemers.org/")) "http://srfi.schemers.org/")))
   )
