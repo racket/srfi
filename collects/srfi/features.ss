@@ -26,5 +26,5 @@
 
   (define (feature->require-clause id)
     (if (and (srfi-id? id) (srfi-id-present? id))
-	(list (srfi-id->filename id) "srfi")
+	(cons 'lib (list (srfi-id->filename id) "srfi"))
 	(cdr (assq id *feature-alist*)))))

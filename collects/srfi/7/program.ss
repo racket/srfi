@@ -1,10 +1,10 @@
 ;;;
 ;;; <program.ss> ---- SRFI-7 program
-;;; Time-stamp: <03/02/24 11:20:35 solsona>
 ;;; based on MJ Ray's code for SRFI 0
 
 (module program mzscheme
-  (require-for-syntax (lib "features.ss" "srfi"))
+  (require-for-syntax (lib "stx.ss" "syntax")
+		      (lib "features.ss" "srfi"))
   (require (lib "include.ss"))
   (provide program)
   
@@ -12,17 +12,18 @@
     (lambda (x)
       (syntax-case x ()
 	((_ id)
-	 (with-syntax ((clause
-			(datum->syntax-object
-			 (syntax require)
-			 (feature->require-clause
-			  (syntax-object->datum (syntax id))))))
+	 (with-syntax ((require-spec
+                    (datum->syntax-object
+                      (syntax id)
+                      (feature->require-clause
+                        (syntax-object->datum (syntax id))))))
 	   (syntax
-	    (require (lib . clause))))))))
+	    (require require-spec)))))))
   
   (define-syntax program
     (lambda (x)
-      (syntax-case x (requires files code feature-cond and or not)
+      (syntax-case* x (requires files code feature-cond and or not else)
+		    module-or-top-identifier=?
 	((_)
 	 (syntax (begin (void))))
 	((_
@@ -102,6 +103,16 @@
 			 rest ...)
 	   more ...)))
 
+	((_
+	  (feature-cond ((not requirement) stuff ...)
+			rest ...)
+	  more ...)
+	 (syntax
+	  (program
+	   (feature-cond (requirement
+			  (feature-cond rest ...))
+			 (else
+			  stuff ...)))))
 	((_
 	  (feature-cond (requirement stuff ...)
 			rest ...)
