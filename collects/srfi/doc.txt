@@ -59,7 +59,9 @@ number of the already ported SRFIs:
  SRFI-26            cut.ss                        26
  SRFI-28(+)         28.ss
  SRFI-29            localization.ss               29
- 
+ SRFI-30(+)         30.ss
+ SRFI-31            rec.ss                        31
+
 Notes:
 ,--------------------
 | +  Supported by the core of PLT Scheme
