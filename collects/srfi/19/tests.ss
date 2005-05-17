@@ -9,8 +9,9 @@
   
 ;;; simple test procedures
 (require (lib "time.ss" "srfi" "19")
-         (lib "test.ss" "schemeunit")
-         (lib "text-ui.ss" "schemeunit"))
+         (lib "test.ss" "schemeunit") ; change to a planet reference
+         (lib "text-ui.ss" "schemeunit") ; change to a planet reference
+         )
 
 (define-simple-assertion (assert-not-exn-helper thunk)
                          (with-handlers ([not-break-exn? (lambda (exn) #f)])
