@@ -139,7 +139,7 @@
 ; The first "failure" triggers the guard and aborts the rest of the
 ; sequence (which presumably would not make any sense to execute anyway).
 ;
-; $Id: and-let.ss,v 1.3 2002/05/10 18:05:04 solsona Exp $
+; $Id: and-let.ss,v 1.1 2003/02/25 01:49:25 solsona Exp $
 
 ;;; See: http://srfi.schemers.org for more information on SRFIs.
 

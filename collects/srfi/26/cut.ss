@@ -40,7 +40,7 @@
 ;     combination : procedure being specialized, followed by its arguments
 ;     se          : slots-or-exprs, the qualifiers of the macro
 
-; $Id: cut.ss,v 1.1 2002/06/20 15:40:52 noel Exp $
+; $Id: cut.ss,v 1.1 2003/02/25 01:50:54 solsona Exp $
 
 ;;; See: http://srfi.schemers.org for more information on SRFIs.
 
