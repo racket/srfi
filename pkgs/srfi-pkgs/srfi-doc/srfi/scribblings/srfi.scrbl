@@ -35,7 +35,7 @@
      (make-binding-redirect-elements mod-path
        (map (lambda (b)
               (list (car b) (cadr b)
-                    (build-path 'up "srfi-std" file)
+                    (build-path "srfi-std" file)
                     (caddr b)))
             lst))))
 
