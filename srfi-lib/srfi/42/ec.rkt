@@ -1,6 +1,10 @@
-(module ec mzscheme
-  (require "ec-core.scm" "extra-generators.scm")
+(module ec "mzscheme2.rkt"
+  (require "ec-core.scm" 
+           ; "extra-generators.scm"
+           )
   (provide 
+   ; (all-from "extra-generators.scm") xxx
+   
    ;; generators.scm 
    define-generator
    define-indexed-generator-with-append
@@ -11,7 +15,7 @@
    :port
    :let :parallel :until :do :while
 
-   (all-from "extra-generators.scm")
+   
    
    ;; comprehensions.scm
    

@@ -2,7 +2,7 @@
 ;;; EXPANSION
 ;;;
 
-(module expansion mzscheme
+(module expansion "mzscheme2.rkt"
   (provide (all-from "generator-struct.scm")
            (all-from "generator-definitions.scm")
            (all-from "loops.scm"))
@@ -16,7 +16,7 @@
   (require "generator-struct.scm"
            "loops.scm"
            "generator-definitions.scm")
-  (require-for-template mzscheme)
+  (require-for-template "mzscheme2.rkt")
   
   (define current-introducer (make-parameter #f))
   
@@ -48,10 +48,11 @@
   
   (define (filter-clause? clause-stx)
     (or (if-filter? clause-stx)
-        (syntax-case* clause-stx (if base:if not and or) module-or-top-identifier=?
-          [(not . more) #t]
-          [(and . more) #t]
-          [(or  . more) #t]
+        (syntax-case* clause-stx (if base:if not and or when) module-or-top-identifier=?
+          [(not  . more) #t]
+          [(and  . more) #t]
+          [(or   . more) #t]
+          [(when . more) #t]
           [_            #f])))
       
   (define (begin-clause? clause-stx)
@@ -191,7 +192,7 @@
   ;   var-stx now counts the number of
   ;   elements produced
   
-  (require-for-template mzscheme)
+  (require-for-template "mzscheme2.rkt")
   
   (define (add-index-proc l var-stx)
     (cond
