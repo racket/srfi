@@ -331,12 +331,18 @@
   ;   constructs (do-ec q ... cmd) where the generators gen in q ... are
   ;   replaced by (:until gen stop).
   
-  (define-derived-comprehension ec-guarded-do-ec (nested if not and or begin)
+  (require (prefix mz: mzscheme))
+  
+  (define-derived-comprehension ec-guarded-do-ec (nested if mz:if not and or begin)
     ((ec-guarded-do-ec stop (nested (nested q1 ...) q2 ...) cmd)
      (q1 ... q2 ...)
      (ec-guarded-do-ec stop (nested q1 ... q2 ...) cmd) )
     
     ((ec-guarded-do-ec stop (nested (if test) q ...) cmd)
+     (q ...)
+     (when test (ec-guarded-do-ec stop (nested q ...) cmd)) )
+    
+    ((ec-guarded-do-ec stop (nested (mz:if test) q ...) cmd)
      (q ...)
      (when test (ec-guarded-do-ec stop (nested q ...) cmd)) )
     

@@ -28,8 +28,10 @@
       [_ #f]))
   
   (require (lib "stx.ss" "syntax"))
-  (require (prefix base: scheme)
+  #;(require (prefix base: scheme)
            (for-meta 1 (prefix base: scheme)))
+  (require (prefix base: racket/base)
+           (for-meta 1 (prefix base: racket/base)))
   
   (define (if-filter? stx)
       (syntax-case stx ()
@@ -38,7 +40,8 @@
               (eq? 'if (syntax-e #'head)))]
         [else #f]))
   
-  (require (prefix new- scheme))
+  ; (require (prefix new- scheme))
+  (require (prefix new- racket/base))
   
   #;(define (if-filter? stx)
     (syntax-case* stx (if new-if) module-or-top-identifier=?
@@ -138,19 +141,19 @@
                 [(if-filter? #'clause1)
                  (syntax-case #'clause1 ()
                    [(the-if expr)
-                    #`(if expr #,(loop2... body-stx))]
+                    #`(when expr #,(loop2... body-stx))]
                    [else (raise-syntax-error 'expand-clauses 
                                              "internal error: <if-filter> expected" #'clause1)])] 
                 [else
                  (syntax-case* #'clause1 (if not and or) module-or-top-identifier=?  ; due to not
                    #;[(if expr)  
-                      #`(if expr #,(loop2... body-stx))]
+                      #`(when expr #,(loop2... body-stx))]
                    [(not expr)
-                    #`(if (not expr) #,(loop2... body-stx))]
+                    #`(when (not expr) #,(loop2... body-stx))]
                    [(or expr ...)
-                    #`(if (or expr ...) #,(loop2... body-stx))]
+                    #`(when (or expr ...) #,(loop2... body-stx))]
                    [(and expr ...)
-                    #`(if (and expr ...) #,(loop2... body-stx))]
+                    #`(when (and expr ...) #,(loop2... body-stx))]
                    [_
                     (raise-syntax-error 'expand-clauses 
                                         "unimplemented <filter>" #'clause1)])]))]

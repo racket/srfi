@@ -1,9 +1,7 @@
 (module ec "mzscheme2.rkt"
   (require "ec-core.scm" 
-           ; "extra-generators.scm"
-           )
-  (provide 
-   ; (all-from "extra-generators.scm") xxx
+           "extra-generators.scm")
+  (provide (all-from "extra-generators.scm")
    
    ;; generators.scm 
    define-generator
