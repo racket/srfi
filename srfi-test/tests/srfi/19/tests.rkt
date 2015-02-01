@@ -197,6 +197,10 @@
       (check-not-exn (lambda () (check-equal? (string->date   "10-03-02" "~?-~m-~d") (srfi:make-date 0 0 0 0 2 3 2010 cur-tz))))
       (check-not-exn (lambda () (check-equal? (string->date  "100-03-02" "~?-~m-~d") (srfi:make-date 0 0 0 0 2 3  100 cur-tz))))
       (check-not-exn (lambda () (check-equal? (string->date "1000-03-02" "~?-~m-~d") (srfi:make-date 0 0 0 0 2 3 1000 cur-tz)))))
+    
+    (test-case "string->date conversions with do-nothing format specifiers"
+      (check-equal? (string->date "Sun, 02 Feb 2015" "~a, ~d ~b ~Y")              (srfi:make-date 0 0 0 0 2 2 2015 cur-tz))
+      (check-equal? (string->date "~ Sun Sunday 02 Feb 2015" "~~ ~a ~A ~d ~b ~Y") (srfi:make-date 0 0 0 0 2 2 2015 cur-tz)))
 
     (test-case "type-like error on date->string"
                (check-exn

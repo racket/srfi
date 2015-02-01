@@ -1485,7 +1485,7 @@
          (locale-reader-long-month   (tm:make-locale-reader
                                       tm:locale-long-month->index))
          (char-fail (lambda (ch) #t))
-         (do-nothing (lambda (val object) (values)))
+         (do-nothing (lambda (val object) object))
          )
 
     (list
