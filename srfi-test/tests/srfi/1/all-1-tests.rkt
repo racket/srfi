@@ -27,5 +27,8 @@
      predicate-tests
      search-tests
      selector-tests
+     (test-case
+      "collisions"
+      (dynamic-require 'tests/srfi/1/racket-base-collide #f))
      ))
   )

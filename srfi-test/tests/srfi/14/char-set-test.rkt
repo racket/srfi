@@ -29,6 +29,7 @@
 
   (require rackunit)
   (require srfi/14/char-set)
+  (require "srfi-14.rkt")
   (provide char-set-tests)
 
   (define char-set-tests
@@ -223,6 +224,8 @@
      (test-case
       "char-set-contains? test (if not there)"
       (check-true (not (char-set-contains? (char-set #\a #\b #\c) #\z))))
+
+     srfi-14-tests
 
      ))
 
