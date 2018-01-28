@@ -6,19 +6,14 @@
                      "scheme-lib"
                      "base"
                      "scribble-lib"
-                     "srfi-lib"
+                     "srfi-doc"
+                     "srfi-lib-nonfree"
                      "racket-doc"
                      "r5rs-doc"
                      "r6rs-doc"
                      "compatibility-lib"))
+(define update-implies '("srfi-lib-nonfree"))
 
-(define deps '("scheme-lib"
-               "base"
-               "scribble-lib"
-               "compatibility-lib"))
-
-(define update-implies '("srfi-lib"))
-
-(define pkg-desc "documentation part of \"srfi\"")
+(define pkg-desc "documentation part of \"srfi nonfree\"")
 
 (define pkg-authors '(mflatt noel chongkai jay))
