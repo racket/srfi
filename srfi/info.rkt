@@ -9,7 +9,7 @@
 (define implies '("srfi-lib"
                   "srfi-lib-nonfree"
                   "srfi-doc"
-                  "srfi-foc-nonfree"))
+                  "srfi-doc-nonfree"))
 
 (define pkg-desc "Legacy SRFI (Scheme) libraries")
 
