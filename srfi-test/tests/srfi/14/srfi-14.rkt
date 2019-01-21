@@ -125,7 +125,7 @@
 
 ;; As of Unicode 5.0: 388
 ;; As of Unicode 7.0:
-(test 668 char-set-size char-set:digit)
+(test 1354 char-set-size char-set:digit)
 
 (test #t char-set=
       char-set:digit
