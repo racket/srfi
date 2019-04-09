@@ -3,6 +3,7 @@
 (require "1/all-1-tests.rkt"
          "2/and-let-test.rkt"
          "4/srfi-4-test.rkt"
+         "5/srfi-5-test.rkt"
          "11/srfi-11-test.rkt"
          "13/string-test.rkt"
          "14/char-set-test.rkt"
@@ -25,4 +26,5 @@
    hash-tests
    srfi-4-tests
    srfi-11-tests
+   srfi-5-tests
    ))
