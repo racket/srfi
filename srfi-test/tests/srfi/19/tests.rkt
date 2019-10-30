@@ -205,7 +205,7 @@
     (test-case "type-like error on date->string"
                (check-exn
                 (lambda (exn)
-                  (regexp-match #px"expects type <string>"
+                  (regexp-match #px"type <string>"
                                 (exn-message exn)))
                 (lambda () (date->string (srfi:make-date 1000 2 3 4 2 5 2011 (* 60 -120)) #t))))
 
