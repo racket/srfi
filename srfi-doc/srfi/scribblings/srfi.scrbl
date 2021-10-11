@@ -13,7 +13,7 @@
 
 @title{SRFIs: Libraries}
 
-The @link[#:style srfi-std "http://srfi.schemers.org/"]{Scheme Requests for
+The @link[#:style srfi-std "https://srfi.schemers.org/"]{Scheme Requests for
 Implementation} (a.k.a. @deftech{SRFI}) process allows individual
 members of the Scheme community to propose libraries and extensions to
 be supported by multiple Scheme implementations.

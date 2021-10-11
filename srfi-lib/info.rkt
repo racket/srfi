@@ -13,3 +13,6 @@
 (define pkg-desc "implementation (no documentation) part of \"srfi\"")
 
 (define pkg-authors '(mflatt noel chongkai jay))
+
+(define license
+  '(Apache-2.0 OR MIT))

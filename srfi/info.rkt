@@ -12,3 +12,6 @@
 (define pkg-desc "Legacy SRFI (Scheme) libraries")
 
 (define pkg-authors '(mflatt noel chongkai jay))
+
+(define license
+  '(Apache-2.0 OR MIT))
