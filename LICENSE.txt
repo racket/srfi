@@ -1,4 +1,4 @@
-This component of Racket is includes software under the under the
+This component of Racket is under the
 Apache 2.0 and MIT licenses. The user can choose the license under
 which they will be using the software.
 
