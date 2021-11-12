@@ -5,12 +5,12 @@
 ;; Apache 2.0 and MIT licenses. The user can choose the license under
 ;; which they will be using the software.
 ;;
-;; However, the SRFI 29 and SRFI 5 documents have restrictive licenses:
-;; see the individual documents for those licenses.
-;; (The implementations of `srfi/29` and `srfi/5` found in the
-;; "srfi-lib" package are not licensed restrictively.)
+;; However, the SRFI 5 document has a restrictive licenses:
+;; see the file "srfi-5.html" for the specific license.
+;; (The implementation of `srfi/5` found in the
+;; "srfi-lib" package is not licensed restrictively.)
 ;;
-;; NOTE: Since the license of the SRFI 29 and SRFI 5 documents
+;; NOTE: Since the license of the SRFI 5 document
 ;; doesn't have an SPDX license identifier, this file intentionally
 ;; DOES NOT include a definition for `license`.
 

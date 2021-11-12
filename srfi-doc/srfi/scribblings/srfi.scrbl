@@ -616,6 +616,20 @@ returns @racket[#f].
 
 @; ----------------------------------------
 
+@srfi[29]{Localization}
+
+@redirect[29 '(
+ (current-language #f "current-language")
+ (current-country #f "current-country")
+ (current-locale-details #f "current-locale-details")
+ (declare-bundle! #f "declare-bundle!")
+ (store-bundle #f "store-bundle")
+ (load-bundle! #f "load-bundle!")
+ (localized-template #f "localized-template")
+)]
+
+@; ----------------------------------------
+
 @srfi[30]{Nested Multi-line Comments}
 
 This SRFI's syntax is part of Racket's default reader.
