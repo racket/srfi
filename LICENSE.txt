@@ -21,8 +21,8 @@ Apache 2.0 and MIT licenses.
 With the exceptions listed below, the documents are also distributed
 under free software licenses.
 
-The "srfi-doc-nonfree" package contains the source of the SRFI 29 and
-SRFI 5 documents, which have restrictive licenses. See the individual
-documents for those licenses. The implementations of `srfi/29` and
-`srfi/5` found in this repository are not restrictively licensed.
-
+The "srfi-doc-nonfree" package contains the source of the SRFI 5 document,
+which has a restrictive licenses. See the file:
+  srfi-doc-nonfree/srfi/scribblings/srfi-std/srfi-5.html
+for the specific license. The implementation of `srfi/5` found in this
+repository (in the "srfi-lib" package) is not restrictively licensed.
