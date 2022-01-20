@@ -2,6 +2,8 @@
 
 (define collection 'multi)
 
+(define version "1.1")
+
 (define deps '("scheme-lib"
                "base"
                "srfi-lite-lib"
