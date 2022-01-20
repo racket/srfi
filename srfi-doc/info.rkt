@@ -2,20 +2,18 @@
 
 (define collection 'multi)
 
+(define version "1.1")
+
 (define build-deps '("mzscheme-doc"
                      "scheme-lib"
                      "base"
                      "scribble-lib"
                      "srfi-lib"
                      "racket-doc"
-                     "r5rs-doc"
-                     "r6rs-doc"
+                     "racket-index"
                      "compatibility-lib"))
 
-(define deps '("scheme-lib"
-               "base"
-               "scribble-lib"
-               "compatibility-lib"))
+(define deps '("base"))
 
 (define update-implies '("srfi-lib"))
 

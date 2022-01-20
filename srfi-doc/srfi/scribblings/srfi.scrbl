@@ -208,6 +208,11 @@ are also available from @racketmodname[scheme/foreign].
 
 @; ----------------------------------------
 
+@; special case for historical license reasons
+@include-section["srfi-5-doc-free.scrbl"]
+
+@; ----------------------------------------
+
 @srfi[6]{Basic String Ports}
 
 @redirect[6 '(

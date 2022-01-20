@@ -14,48 +14,42 @@
           scribble/eval
           scriblib/render-cond
           scribble/core
+          scribble/tag
+          scribble/decode
           scribble/html-properties
           (for-syntax scheme/base)
-          (for-label scheme/base
-                     racket/stream))
+          (for-label srfi/5))
 
 @; ----------------------------------------------------------------------
 
-@title{SRFI Nonfree Libraries and Documentation}
+@title{Nonfree SRFI Specification Documents}
+@; hack to get a link to the package:
+@defmodule[#:require-form (λ (mod) (list @smaller{SRFI 5 specification}))
+           srfi/5
+           #:packages ("srfi-doc-nonfree")
+           #:no-declare #:link-target? #f]
 
-The @link[#:style srfi-std "https://srfi.schemers.org/"]{Scheme Requests for
-Implementation} (a.k.a. @deftech{SRFI}) process allows individual
-members of the Scheme community to propose libraries and extensions to
-be supported by multiple Scheme implementations.
+@(let ()
+   ;; set up indirect linking
+   (define (redirect taglet anchor)
+     (redirect-target-element
+      #f null (make-section-tag taglet) "srfi-std/srfi-5.html" anchor))
+   (list @elem[#:style srfi-std]{}
+         (redirect srfi-5-std-taglet "")
+         (redirect srfi-5-license-taglet "copyright")))
 
-Racket is distributed with implementations of many SRFIs, most of
-which can be implemented as libraries. To import the bindings of SRFI
-@math{n}, use
+This package contains a copy of the @seclink[srfi-5-std-taglet]{
+SRFI 5 specification document}.
 
-@racketblock[
-(require @#,elem{@racketidfont{srfi/}@math{n}})
-]
+For @hyperlink[srfi-license-history-url]{historical
+ reasons}, the SRFI 5 specification document has a
+@seclink[srfi-5-license-taglet]{restrictive license} and is
+not included in the main Racket distribution.
 
-This document lists the SRFIs that are supported by Racket and
-provides a link to the original SRFI specification (which is also
-distributed as part of Racket's documentation).
-
-The following SRFI specification documents are licensed restrictively.  
-
-@table-of-contents[]
-
-
-@; ----------------------------------------
-
-@srfi[5]{A compatible let form with signatures and rest arguments}
-
-@redirect[5 '(
- (let #t "unnamed")
-)]
-
-Racket provides a free implementation of this SRFI in the @racket[srfi-lib] package.
-Only the SRFI specification document is nonfree.
-
-@; ----------------------------------------
-
-@index-section[]
+Racket provides a free implementation of SRFI 5 in
+@racketmodname[srfi/5] and free alternative documentation
+for SRFI 5's variant of @racket[let] in
+@secref["srfi-5" #:doc '(lib "srfi/scribblings/srfi.scrbl")].
+The implementation and documentation are distributed under
+the same @racket-license-link{license} as Racket: only the
+original specification document is restrictively licensed.
