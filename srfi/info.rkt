@@ -3,11 +3,9 @@
 (define collection 'multi)
 
 (define deps '("srfi-lib"
-               "srfi-doc"
-               "srfi-doc-nonfree"))
+               ["srfi-doc" #:version "1.1"]))
 (define implies '("srfi-lib"
-                  "srfi-doc"
-                  "srfi-doc-nonfree"))
+                  "srfi-doc"))
 
 (define pkg-desc "Legacy SRFI (Scheme) libraries")
 

@@ -37,6 +37,17 @@ body {
         margin-bottom: 0rem;
     }
 }
+.refpara.racket-srfi-note .refcolumn {
+    /* Overrides @media rule to put .refcolumn in the margin on wide
+       screens. This is necessary because some SRFIs (e.g. 14) include
+       inline stylesheets that interfere with the way it tries to use
+       `float`.
+   */
+    margin: inherit;
+    float: inherit;
+    clear: inherit;
+    width: inherit;
+}
 h1 {
     /* like h2 from manual-style.css */
     font-family: 'Cooper-Hewitt';

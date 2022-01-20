@@ -49,6 +49,7 @@
 (require xml
          net/url-string
          net/git-checkout
+         "srfi-doc/srfi/scribblings/util.rkt"
          racket/runtime-path)
 
 (define current-owner
@@ -311,6 +312,8 @@
 ;;     <https://github.com/scheme-requests-for-implementation/srfi-29/pull/1#issue-1052449297>.
 ;;   - Rewrite URLs: see `transform-urls-in-body`.
 ;;   - Add notes about PLT-specific extensions: see `inject-plt-extensions`.
+;;   - Add a note after the SRFI title and author explaining how
+;;     this copy of the SRFI is distributed: see `make-racket-srfi-note`.
 (define (transform-in-body n xs)
   (match-define (list* pre ...
                        (list* 'h1
@@ -332,6 +335,8 @@
     (h1 ,h1-attrs ,@h1-pre "SRFI " ,@h1-post)
     ,@between-h1-and-author
     ,author
+    "\n"
+    ,(make-racket-srfi-note n)
     ,@(inject-plt-extensions
        n (transform-urls-in-body n after-author))))
           
@@ -558,6 +563,48 @@
             ,file)]))]
     [_
      #f]))
+
+;; make-racket-srfi-note: (-> exact-positive-integer? xexpr/c)
+;; Generates a note for SRFI N explaining how Racket distributes
+;; this copy and linking to the upstream document.
+(define (make-racket-srfi-note n)
+  (define n-str (number->string n))
+  (define upstream-url
+    (format "https://srfi.schemers.org/srfi-~a/srfi-~a.html" n n))
+  (define-syntax-rule (splice-when expr form0 form ...)
+    (if expr
+        `(form0 form ...)
+        '()))
+  ;; like @margin-note{}
+  `(blockquote ([class "refpara racket-srfi-note"])
+               (blockquote ([class "refcolumn"])
+                           (blockquote ([class "refcontent"])
+                                       @p{
+ This copy of the SRFI @,n-str specification document
+ is distributed as part of the Racket package
+ @(a ([href ,(if (memv n subdir-srfis)
+                 "../../index.html"
+                 "../index.html")])
+     (span ([class "stt"])
+           ,(if (= 5 n)
+                "srfi-doc-nonfree"
+                "srfi-doc")))@,@splice-when[(= 5 n)]{,
+  which is not included in the main Racket distribution}.
+}
+                                       @,@(splice-when (= 5 n) @p{
+ @; like what @deprecated{} generates:
+ @(b ([style "background-color: yellow;"]) "NOTE:")
+ For @(a ([href ,srfi-license-history-url]) "historical reasons"),
+ the SRFI 5 specification document has a
+ @(a ([href "#copyright"]) "restrictive license").
+ Racket provides a free implementation of SRFI 5 with
+ @(a ([href "../../srfi/srfi-5.html"]) "free documentation"):
+ only this specification document is restrictively licensed.
+ })
+                                       @p{
+ The canonical source of this document is
+ @(a ([href ,upstream-url]) ,upstream-url).
+ }))))
 
 (define (provenance-comment-string repo commit)
   ;; we assume the GitHub owner will be no longer than

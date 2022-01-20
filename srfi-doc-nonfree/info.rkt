@@ -16,16 +16,13 @@
 
 (define collection 'multi)
 
-(define build-deps '("mzscheme-doc"
-                     "scheme-lib"
+(define build-deps '("scheme-lib"
                      "base"
                      "scribble-lib"
-                     "srfi-doc"
-                     "racket-doc"
-                     "r5rs-doc"
-                     "r6rs-doc"
-                     "compatibility-lib"))
+                     "racket-index"
+                     "srfi-lib"
+                     ["srfi-doc" #:version "1.1"]))
 
-(define pkg-desc "non-free documentation for \"srfi-lib\"")
+(define pkg-desc "non-free SRFI 5 standard document")
 
 (define pkg-authors '(mflatt noel chongkai jay))

@@ -10,4 +10,4 @@
 ;; (The implementation of `srfi/5` found in the
 ;; "srfi-lib" package is not licensed restrictively.)
 
-(define scribblings '(("srfi-nf.scrbl" (multi-page) (library 100))))
+(define scribblings '(("srfi-nf.scrbl" () (legacy))))
