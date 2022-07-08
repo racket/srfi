@@ -5,8 +5,8 @@
           scriblib/render-cond
           scribble/core
           scribble/html-properties
-          (for-syntax scheme/base)
-          (for-label (except-in scheme/base
+          (for-syntax racket/base)
+          (for-label (except-in racket/base
                                 make-date ;; but we DO want `date`
                                 date?
                                 date-second
@@ -823,7 +823,7 @@ same as from @racketmodname[racket/stream].
 )]
 
 Forms that syntactically detect @racket[if] recognize both @racket[if]
-from @racketmodname[scheme/base] and @mz-if from
+from @racketmodname[racket/base] and @mz-if from
 @racketmodname[mzscheme].
 
 @; ----------------------------------------

@@ -5,6 +5,7 @@
 (define version "1.1")
 
 (define build-deps '("mzscheme-doc"
+                     "scheme-doc"
                      "scheme-lib"
                      "base"
                      "scribble-lib"
