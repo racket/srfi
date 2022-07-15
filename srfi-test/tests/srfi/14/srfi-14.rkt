@@ -64,8 +64,9 @@
 (test #t char-set-contains? char-set:letter+digit #\Z)
 
 ;; As of Unicode 5.0: 93217
-;; As of Unicode 7.0:
-(test 104077 char-set-size char-set:letter)
+;; As of Unicode 7.0: 104077
+;; As of Unicode 14.0: 133396
+(test 133396 char-set-size char-set:letter)
 
 (test #t char-set= char-set:letter+digit (char-set-union char-set:letter char-set:digit))
 ;; Slow!:
@@ -124,8 +125,9 @@
 ;; Iterating over character sets ----------------------------------------
 
 ;; As of Unicode 5.0: 388
-;; As of Unicode 7.0:
-(test 1354 char-set-size char-set:digit)
+;; As of Unicode 7.0: 1354
+;; As of Unicode 14.0: 1799
+(test 1799 char-set-size char-set:digit)
 
 (test #t char-set=
       char-set:digit
