@@ -9,7 +9,7 @@
   (syntax-rules ()
     [(_ #t p? args ...) (check-true (p? args ...))]
     [(_ #f p? args ...) (check-false (p? args ...))]
-    [(_ e args ...) (check-equal? e (args ...))]))
+    [(_ e args ...) (check-equal? (args ...) e)]))
 
 (define-syntax-rule (err/rt-test e) (check-exn exn:fail? (λ () e)))
 
