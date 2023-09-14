@@ -1,5 +1,5 @@
 (module case mzscheme
-  
+  (require (prefix r: racket/base))
   (provide (rename my-case srfi:case))
   
   (define-syntax case-test
@@ -14,12 +14,16 @@
 
   (define-syntax my-case
     (lambda (x)
-      (syntax-case x (else =>)
+      (syntax-case x (else r:else =>)
 	((_ v)
 	 (syntax (begin v (cond))))
 	((_ v (else => e))
 	 (syntax/loc x (e v)))
 	((_ v (else e1 e2 ...))
+	 (syntax/loc x (begin v e1 e2 ...)))
+        ((_ v (r:else => e))
+	 (syntax/loc x (e v)))
+	((_ v (r:else e1 e2 ...))
 	 (syntax/loc x (begin v e1 e2 ...)))
 	((_ v ((k ...) => e) c ...)
 	 (syntax/loc x (let ((x v))
