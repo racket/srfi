@@ -69,7 +69,8 @@
 ;; As of Unicode 15.0: 137765
 ;; As of Unicode 15.1: 138387			  
 ;; As of Unicode 16.0: 142759
-(test 142759 char-set-size char-set:letter)
+;; As of Unicode 17.0: 147421
+(test 147421 char-set-size char-set:letter)
 
 (test #t char-set= char-set:letter+digit (char-set-union char-set:letter char-set:digit))
 ;; Slow!:
@@ -132,7 +133,8 @@
 ;; As of Unicode 14.0: 1799
 ;; As of Unicode 15.0: 1839
 ;; As of Unicode 16.0: 1919
-(test 1919 char-set-size char-set:digit)
+;; As of Unicode 17.0: 1940
+(test 1940 char-set-size char-set:digit)
 
 (test #t char-set=
       char-set:digit
